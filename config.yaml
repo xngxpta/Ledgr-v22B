@@ -1,0 +1,20 @@
+credentials:
+  usernames:
+    admin:
+      email: admin@example.com
+      name: Admin User
+      password: '$2b$12$9zPjzCqY5O0X0J3M6VvH4e6MJXqDw1F3xvM3V6K2qYf7YdP1wYpPe'  # hashed
+
+    user1:
+      email: user1@example.com
+      name: Normal User
+      password: '$2b$12$9zPjzCqY5O0X0J3M6VvH4e6MJXqDw1F3xvM3V6K2qYf7YdP1wYpPe'
+
+cookie:
+  expiry_days: 7
+  key: "super-secret-key"
+  name: "streamlit_auth"
+
+preauthorized:
+  emails:
+    - admin@example.com
