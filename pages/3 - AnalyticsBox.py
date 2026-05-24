@@ -1210,9 +1210,6 @@ with st.container(border=True):
         fig_macd_signal.update_layout(
             title='MACD Signal', height=300, showlegend=False)
         fig_macd_signal.update_xaxes(visible=True, showticklabels=True)
-        fig_macd_signal.update_yaxes(
-            title='MACD Signal', visible=True, showticklabels=True)
-
         fig_macd_diff = px.area(df["trend_macd_diff"])
         fig_macd_diff.update_layout(
             title='MACD Diff', height=300, showlegend=False)
