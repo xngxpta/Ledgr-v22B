@@ -1200,36 +1200,35 @@ with st.container(border=True):
             st.plotly_chart(fig_ema, use_container_width=True)
 
     elif choix1 == "Moving Average Convergence Divergence (MACD)":
+        st.subheader("Moving Average Convergence-Divergence")
+        fig_macd = px.area(df["trend_macd"])
+        fig_macd.update_layout(title='MACD', showlegend=False)
+        fig_macd.update_xaxes(visible=True, showticklabels=True)
+        fig_macd.update_yaxes(title='MACD Signal',
+                              visible=True, showticklabels=True)
+        fig_macd_signal = px.bar(
+            df["trend_macd_signal"], color=df["trend_macd_signal"])
+        fig_macd_signal.update_layout(
+            title='MACD Signal', height=300, showlegend=False)
+        fig_macd_signal.update_xaxes(visible=True, showticklabels=True)
+        fig_macd_signal.update_yaxes(title='MACD Signal', visible=True, showticklabels=True)
+        fig_macd_diff = px.area(df["trend_macd_diff"])
+        fig_macd_diff.update_layout(
+            title='MACD Diff', height=300, showlegend=False)
+        fig_macd_diff.update_xaxes(visible=True, showticklabels=True)
+        fig_macd_diff.update_yaxes(title='MACD Diff', visible=True, showticklabels=True)
       
-            st.subheader("Moving Average Convergence-Divergence")
-            fig_macd = px.area(df["trend_macd"])
-            fig_macd.update_layout(title='MACD', showlegend=False)
-            fig_macd.update_xaxes(visible=True, showticklabels=True)
-            fig_macd.update_yaxes(title='MACD Signal',
-                                  visible=True, showticklabels=True)
-            fig_macd_signal = px.bar(
-                df["trend_macd_signal"], color=df["trend_macd_signal"])
-            fig_macd_signal.update_layout(
-                title='MACD Signal', height=300, showlegend=False)
-            fig_macd_signal.update_xaxes(visible=True, showticklabels=True)
-            fig_macd_signal.update_yaxes(title='MACD Signal', visible=True, showticklabels=True)
-            fig_macd_diff = px.area(df["trend_macd_diff"])
-            fig_macd_diff.update_layout(
-                title='MACD Diff', height=300, showlegend=False)
-            fig_macd_diff.update_xaxes(visible=True, showticklabels=True)
-            fig_macd_diff.update_yaxes(title='MACD Diff', visible=True, showticklabels=True)
-      
-      mcd1, mcd2, mcd3 = st.columns([2, 1, 1])
+        mcd1, mcd2, mcd3 = st.columns([2, 1, 1])
     
-      st.plotly_chart(fig_macd, use_container_width=True)
-      st.info("Moving average convergence/divergence (MACD) is a technical indicator that helps investors identify price trends, measure trend momentum, and identify entry points for buying or selling a security. ")
-      st.plotly_chart(fig_macd_diff, use_container_width=True)
-      st.info("""The MACD Diff Plot , in addition, refers to the difference or divergence between moving averages, which is the core calculation of the MACD indicator.
-      It is calculated by subtracting the 26-period exponential moving average (EMA) from the 12-period EMA, creating a MACD plot.""")
-     
-      st.plotly_chart(fig_macd_signal, width='content')
-      st.info("""The MACD Signal Plot indicates The MACD signal line is a 9-period exponential moving average (EMA) of the MACD line itself.
-      It helps generate buy and sell signals when the MACD line crosses above or below it.""")
+        st.plotly_chart(fig_macd, use_container_width=True)
+        st.info("Moving average convergence/divergence (MACD) is a technical indicator that helps investors identify price trends, measure trend momentum, and identify entry points for buying or selling a security. ")
+        st.plotly_chart(fig_macd_diff, use_container_width=True)
+        st.info("""The MACD Diff Plot , in addition, refers to the difference or divergence between moving averages, which is the core calculation of the MACD indicator.
+        It is calculated by subtracting the 26-period exponential moving average (EMA) from the 12-period EMA, creating a MACD plot.""")
+        
+        st.plotly_chart(fig_macd_signal, width='content')
+        st.info("""The MACD Signal Plot indicates The MACD signal line is a 9-period exponential moving average (EMA) of the MACD line itself.
+        It helps generate buy and sell signals when the MACD line crosses above or below it.""")
    #   st.link_button("MACD", 'https://macd-indicator-vii9s8y.gamma.site')
 
     elif choix1 == "Average Directional Movement Index (ADX)":
