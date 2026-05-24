@@ -6,7 +6,7 @@
 # __license__ = 'Ledgr | alphaledgr.com'
 # __version__ = '01.02.04'
 # __maintainer__ = 'r_xn@alphaledgr.com'
-# __emails__ = 'r_xn@alphaledgr.com / response@alphaledgr.com'
+# __emails__ = 'r_xn@alphaledgr.com / response@alphaledgr.com'   #   st.link_button("MACD", 'https://macd-indicator-vii9s8y.gamma.site')
 # __status__ = 'In active development'
 
 # # Imports and Definitions # #
@@ -1227,7 +1227,6 @@ with st.container(border=True):
         st.plotly_chart(fig_macd_signal, use_container_width=True)
         st.info("""The MACD Signal Plot indicates The MACD signal line is a 9-period exponential moving average (EMA) of the MACD line itself
 . It helps generate buy and sell signals when the MACD line crosses above or below it.""")
-      st.link_button("MACD", "https://gamma.app/docs/MACD-Indicator-jezlomsllf0ooho/preview")
 
     elif choix1 == "Average Directional Movement Index (ADX)":
 
