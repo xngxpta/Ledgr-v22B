@@ -1218,7 +1218,7 @@ with st.container(border=True):
         fig_macd_diff.update_xaxes(visible=True, showticklabels=True)
         fig_macd_diff.update_yaxes(title='MACD Diff', visible=True, showticklabels=True)
       
-        mcd1, mcd2, mcd3 = st.columns([2, 1, 1])
+        # mcd1, mcd2, mcd3 = st.columns([2, 1, 1])
     
         st.plotly_chart(fig_macd, use_container_width=True)
         st.info("Moving average convergence/divergence (MACD) is a technical indicator that helps investors identify price trends, measure trend momentum, and identify entry points for buying or selling a security. ")
