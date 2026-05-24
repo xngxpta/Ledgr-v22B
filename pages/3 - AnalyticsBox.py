@@ -1228,7 +1228,7 @@ with st.container(border=True):
         st.plotly_chart(fig_macd_signal, use_container_width=True)
         st.info("""The MACD Signal Plot indicates The MACD signal line is a 9-period exponential moving average (EMA) of the MACD line itself.
         It helps generate buy and sell signals when the MACD line crosses above or below it.""")
-      st.link_button("MACD", "https://macd-indicator-vii9s8y.gamma.site/")
+      st.link_button("MACD", 'https://macd-indicator-vii9s8y.gamma.site')
 
     elif choix1 == "Average Directional Movement Index (ADX)":
 
