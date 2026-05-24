@@ -786,7 +786,7 @@ fig_pvo, fig_pvo_signal = pvo(df)
 @st.cache_resource
 def atr(df):
     df_atr = df["volatility_atr"]
-    fig_atr = make_subplots(rows=2, cols=1, shared_xaxes=True)
+ #   fig_atr = make_subplots(rows=2, cols=1, shared_xaxes=True)
     fig_atr.add_trace(go.Candlestick(x=df.index,
                                      open=df["Open"], high=df["High"],
                                      low=df["Low"], close=df["Close"],
