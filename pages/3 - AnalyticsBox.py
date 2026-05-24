@@ -1204,12 +1204,12 @@ with st.container(border=True):
         fig_macd.update_xaxes(visible=True, showticklabels=True)
         fig_macd.update_yaxes(title='MACD Signal',
                               visible=True, showticklabels=True)
-        fig_macd_signal = px.bar(
-            df["trend_macd_signal"], color=df["trend_macd_signal"])
-        fig_macd_signal.update_layout(
-            title='MACD Signal', height=300, showlegend=False)
-        fig_macd_signal.update_xaxes(visible=True, showticklabels=True)
-        fig_macd_signal.update_yaxes(
+        fig_macd = px.area(
+            df["trend_macd_signal"])
+        fig_macd.update_layout(
+            title='MACD 9 Day', showlegend=True)
+        fig_macd.update_xaxes(visible=True, showticklabels=True)
+        fig_macd.update_yaxes(
             title='MACD Signal', visible=True, showticklabels=True)
 
         fig_macd_diff = px.area(df["trend_macd_diff"])
