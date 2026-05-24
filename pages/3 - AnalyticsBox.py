@@ -786,7 +786,7 @@ fig_pvo, fig_pvo_signal = pvo(df)
 @st.cache_resource
 def atr(df):
     df_atr = df["volatility_atr"]
- #   fig_atr = make_subplots(rows=2, cols=1, shared_xaxes=True)
+    fig_atr = make_subplots(rows=2, cols=1, shared_xaxes=True)
     fig_atr.add_trace(go.Candlestick(x=df.index,
                                      open=df["Open"], high=df["High"],
                                      low=df["Low"], close=df["Close"],
@@ -1199,6 +1199,7 @@ with st.container(border=True):
             st.plotly_chart(fig_ema, use_container_width=True)
 
     elif choix1 == "Moving Average Convergence Divergence (MACD)":
+      
         st.subheader("Moving Average Convergence-Divergence")
         fig_macd = px.area(df["trend_macd"])
         fig_macd.update_layout(title='MACD', showlegend=False)
