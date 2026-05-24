@@ -1204,7 +1204,7 @@ with st.container(border=True):
         fig_macd.update_xaxes(visible=True, showticklabels=True)
         fig_macd.update_yaxes(title='MACD Signal',
                               visible=True, showticklabels=True)
-        fig_macd = px.area(
+        fig_macd = px.bar(
             df["trend_macd_signal"])
         fig_macd.update_layout(
             title='MACD 9 Day', showlegend=True)
@@ -1226,7 +1226,7 @@ with st.container(border=True):
       #  st.plotly_chart(fig_macd_signal, use_container_width=True)
         st.info("""The MACD Signal Plot indicates The MACD signal line is a 9-period exponential moving average (EMA) of the MACD line itself
 . It helps generate buy and sell signals when the MACD line crosses above or below it.""")
-      st.link_button("MACD", "https://gamma.app/docs/MACD-Indicator-jezlomsllf0ooho/preview")
+     # st.link_button("MACD", "https://gamma.app/docs/MACD-Indicator-jezlomsllf0ooho/preview")
 
     elif choix1 == "Average Directional Movement Index (ADX)":
 
