@@ -799,6 +799,7 @@ def atr(df):
     fig_atr.update_layout(title=f'Average true range for {stock}')
     fig_atr.update_layout(showlegend=False)
     fig_atr.update_xaxes(title='Timeline', visible=True, showticklabels=True)
+  
     fig_ui = px.bar(df['volatility_ui'])
     fig_ui.update_xaxes(
         title='Timeline', visible=True, showticklabels=True)
