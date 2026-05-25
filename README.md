@@ -22,4 +22,4 @@ Ledgr is a symbiotic ecosystem designed to benefit the user through knowledge, a
 
 
 Visit Ledgr at - www.alphaledgr.com
-Check out Our Youtube Channel - www.youtube.com/@LedgrInc
+Check out Our Youtube Channel - www.youtube.com/@LedgrBase
