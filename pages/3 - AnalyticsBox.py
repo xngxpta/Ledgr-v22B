@@ -1199,6 +1199,15 @@ with st.container(border=True):
 
     elif choix1 == "Moving Average Convergence Divergence (MACD)":
         st.subheader("Moving Average Convergence-Divergence")
+        figOHLC = make_subplots(rows=2, cols=1, shared_xaxes=True,
+                        row_width=[0.3, 0.7])
+        figOHLC.add_trace(go.Ohlc(x=df.index, open=df["Open"], high=df["High"],
+                                  low=df["Low"], close=df["Close"]), row=1, col=1)
+        figOHLC.update_xaxes(visible=True, showticklabels=True)
+        figOHLC.add_trace(go.Bar(
+            x=df.index, y=df['Volume'], name='Volume Traded', showlegend=False),
+            row=2, col=1)
+        figOHLC.update_layout(xaxis_rangeslider_visible=False, showlegend=False)
         fig_macd = px.area(df["trend_macd"])
         fig_macd.update_layout(title='MACD', showlegend=False)
         fig_macd.update_xaxes(visible=True, showticklabels=True)
