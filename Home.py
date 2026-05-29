@@ -42,7 +42,8 @@ st.markdown(
             See below for details..</h3></div>''',
             unsafe_allow_html=True)
 # st.write(f'{username} Welcome!')
-st.image(f'{direc}/pages/appdata/imgs/The alphaLedgr Web3 Platform.png')
+vid_url = "https://youtu.be/FzNTs9QMNR0?si=p0i0GzCSGjRmZgaH"
+st.video(vid_url)
 with st.container():
     a1, a2a, a2, a3 = st.columns([1, 1, 4, 1])
     with a1:
