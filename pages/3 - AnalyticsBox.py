@@ -33,12 +33,12 @@ st.set_page_config(page_title='Ledgr | Analytics', layout="wide",
                    initial_sidebar_state="expanded")
 
 
-url_stripe = "https://book.stripe.com/cNi6oJ3625Zy97b94u0480g"
+url_stripe = "https://book.stripe.com/9B6bJ3gWS87G97b80q0480f"
 url_stripe_2 = "https://buy.stripe.com/6oUbJ35eaew4bfj0xY0480e"
 st.sidebar.link_button("Try Ledgr Pro!", url_stripe, type="primary",
-                       disabled=False, use_container_width=True)
+                       disabled=False)
 st.sidebar.link_button("Become a Patron!", url_stripe_2, type="primary",
-                       disabled=False, use_container_width=True)
+                       disabled=False)
 pathtkr = f"{direc}/pages/appdata/tickerlist_y.csv"
 # Icons and Links ###########################
 ytube = f'{direc}/pages/appdata/imgs/ytube.svg'
@@ -83,6 +83,8 @@ with mx2:
 #with x3:
 #    st.subheader("Day's Leading Performers")
 #    st.write(df_tg)
+st.warning("Please Click the Access/Day @ INR 79/- to access the complete set of tools!!")
+st.stop()
 # Form and Inputs ############################################################
 
 
@@ -1199,24 +1201,15 @@ with st.container(border=True):
 
     elif choix1 == "Moving Average Convergence Divergence (MACD)":
         st.subheader("Moving Average Convergence-Divergence")
-        figOHLC = make_subplots(rows=2, cols=1, shared_xaxes=True,
-                        row_width=[0.3, 0.7])
-        figOHLC.add_trace(go.Ohlc(x=df.index, open=df["Open"], high=df["High"],
-                                  low=df["Low"], close=df["Close"]), row=1, col=1)
-        figOHLC.update_xaxes(visible=True, showticklabels=True)
-        figOHLC.add_trace(go.Bar(
-            x=df.index, y=df['Volume'], name='Volume Traded', showlegend=False),
-            row=2, col=1)
-        figOHLC.update_layout(xaxis_rangeslider_visible=False, showlegend=False)
         fig_macd = px.area(df["trend_macd"])
         fig_macd.update_layout(title='MACD', showlegend=False)
         fig_macd.update_xaxes(visible=True, showticklabels=True)
         fig_macd.update_yaxes(title='MACD Signal',
                               visible=True, showticklabels=True)
-        fig_macd_signal= px.bar(
-            df["trend_macd_signal"])
+        fig_macd_signal = px.bar(
+            df["trend_macd_signal"], color=df["trend_macd_signal"])
         fig_macd_signal.update_layout(
-            title='MACD 9 Day', showlegend=True)
+            title='MACD Signal', height=300, showlegend=False)
         fig_macd_signal.update_xaxes(visible=True, showticklabels=True)
         fig_macd_signal.update_yaxes(
             title='MACD Signal', visible=True, showticklabels=True)
@@ -1232,10 +1225,9 @@ with st.container(border=True):
         st.info("The MACD Plot indicates that...")
         st.plotly_chart(fig_macd_diff, use_container_width=True)
         st.info("The MACD Diff Plot indicates that refers to the difference or divergence between moving averages, which is the core calculation of the MACD indicator. It is calculated by subtracting the 26-period exponential moving average (EMA) from the 12-period EMA, creating a MACD plot.")
-      #  st.plotly_chart(fig_macd_signal, use_container_width=True)
+        st.plotly_chart(fig_macd_signal, use_container_width=True)
         st.info("""The MACD Signal Plot indicates The MACD signal line is a 9-period exponential moving average (EMA) of the MACD line itself
 . It helps generate buy and sell signals when the MACD line crosses above or below it.""")
-     # st.link_button("MACD", "https://gamma.app/docs/MACD-Indicator-jezlomsllf0ooho/preview")
 
     elif choix1 == "Average Directional Movement Index (ADX)":
 
