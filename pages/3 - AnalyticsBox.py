@@ -18,21 +18,13 @@ import yfinance as yf
 import plotly.express as px
 import plotly.graph_objs as go
 from plotly.subplots import make_subplots
-# import seaborn as sns
-# import matplotlib as plt
 import streamlit as st
 from ta.momentum import RSIIndicator
 import json
 from ta import add_all_ta_features
-# from auth.session import init_session
-
-# init_session()
 direc = os.getcwd()
-
 st.set_page_config(page_title='Ledgr | Analytics', layout="wide",
                    initial_sidebar_state="expanded")
-
-
 url_stripe = "https://book.stripe.com/9B6bJ3gWS87G97b80q0480f"
 url_stripe_2 = "https://buy.stripe.com/6oUbJ35eaew4bfj0xY0480e"
 st.sidebar.link_button("Try Ledgr Pro!", url_stripe, type="primary",
@@ -54,22 +46,18 @@ st.logo(logofile, size="medium", link='https://alphaledgr.com/',
         icon_image=logofile)
 # ################################################################
 # ###################### #######################################
-url_ytube = "https://www.youtube.com/@LedgrInc"
+url_ytube = "https://www.youtube.com/@LedgrBase"
 url_fb = "https://www.facebook.com/share/1BnXaYvRzV/"
 url_insta = 'https://www.instagram.com/alphaledgr/'
 url_blog = 'https://www.alphaledgr.com/Blog'
 url_linkedin = "https://www.linkedin.com/company/ledgrapp/"
 # ############################################################
-
-# authenticator.logout("Logout", "sidebar")
 st.title("Analyze any Asset. In-Depth, at ease.")
 
 with st.sidebar:
     st.image(logofile, use_container_width=True)
     st.caption("Your unified Fintelligence Portal!")
     st.write("Analyze Assets, Get tactical insights!")
-    # st.link_button("Access Pro!", url_stripe, type="primary",
-             #      disabled=False, use_container_width="True")
 mx1, mx2 = st.columns(2)
 with mx1:
     st.title(":AnalyticsBox:")
@@ -98,10 +86,7 @@ stock2 = stock + ".NS"
 def getdata(stock2):
     stock2 = yf.Ticker(stock2)
     df2 = stock2.history(period="5y")
-    # df0.to_csv(f"{direc}/pages/appdata/OHLC/{stock2}.csv")
     di = df2.index
-    # df2 = pd.read_csv(f"{direc}/pages/appdata/OHLC/{stock2}.csv", header=[0])
-    # df2 = df2.set_index(['Date'])
     df2 = df2.drop(['Dividends', 'Stock Splits'], axis=1)
     return di, df2
 
@@ -114,7 +99,6 @@ def dta(df2):
     df = add_all_ta_features(df2,
                              open='Open', high='High', low='Low',
                              close='Close', volume='Volume')
-#    df. pd.DataFrame(df2)
     return df
 
 
@@ -215,8 +199,6 @@ with st.container(border=True):
             st.write("**Sector** - ", sector)
         except Exception:
             st.write('Data Unreported')
-    #        fullTimeEmployees = dfi.at['fullTimeEmployees', 'Details']
-    #        st.write("**Employees** - ", fullTimeEmployees)
 
     with su2:
         st.subheader("Trading Ranges")
@@ -1182,7 +1164,7 @@ with st.container(border=True):
 
     elif choix1 == "Moving Average Convergence Divergence (MACD)":
         st.subheader("Moving Average Convergence-Divergence")
-        fig_macd = px.area(df["trend_macd"])
+        fig_macd = px.line(df["trend_macd"])
         fig_macd.update_layout(title='MACD', showlegend=False)
         fig_macd.update_xaxes(visible=True, showticklabels=True)
         fig_macd.update_yaxes(title='MACD Signal',
