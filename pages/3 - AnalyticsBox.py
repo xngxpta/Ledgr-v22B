@@ -79,12 +79,7 @@ with mx1:
 with mx2:
     st.video('https://youtu.be/CkMui1TdMqg?si=o1Jq44z8wxWYMsKn')
 # #################################
-#x3, x4 = st.columns(2)
-#with x3:
-#    st.subheader("Day's Leading Performers")
-#    st.write(df_tg)
-st.warning("Please Click the Access/Day @ INR 79/- to access the complete set of tools!!")
-st.stop()
+
 # Form and Inputs ############################################################
 
 
@@ -126,9 +121,6 @@ def dta(df2):
 df = dta(df2)
 df_col = pd.DataFrame(df.columns)
 df.dropna()
-
-# df_col.to_csv("Analytics Columns DF List.csv")
-# st.write("DTA", df)
 
 
 @st.cache_resource
@@ -262,8 +254,6 @@ with st.container(border=True):
         try:
             avg50 = dfi.at['fiftyDayAverage', 'Details']
             st.write('50 Day Avg. - ', avg50, border=True)
-            # twoHundredDayAverage = dfi.at['twoHundredDayAverage', 'Details']
-            # st.write('200D Avg - ', twoHundredDayAverage)
         except Exception:
             st.write('Data Unreported')
 st.write("  --------------  ")
@@ -621,12 +611,6 @@ def ichi(df):
     fig_ichi.add_trace(go.Scatter(
         x=df.index, y=df["trend_ichimoku_base"],
         name='Ichimoku Base', showlegend=True))
-#  fig_ichi.add_trace(go.Scatter(
-#      x=df.index, y=df["trend_ichimoku_a"], name='Ichimoku A',
-#        showlegend=False))
-#  fig_ichi.add_trace(go.Scatter(
-#       x=df.index, y=df["trend_ichimoku_b"], name='Ichimoku B',
-#  showlegend=False))
     l_ichi_b = df["trend_ichimoku_base"].iloc[-1]
 
     fig_ichi.update_layout(xaxis_rangeslider_visible=False)
@@ -642,7 +626,6 @@ def ichi(df):
     fig_ichi2.add_trace(go.Scatter(
         x=df.index, y=df["trend_visual_ichimoku_b"],
         name='Ichimoku B - Visual', showlegend=False))
-    # fig_ichi2.update_layout(xaxis_rangeslider_visible=False)
     fig_ichi2.update_layout(height=350, showlegend=False)
     fig_ichi2.update_xaxes(visible=False, showticklabels=True)
     fig_ichi2.update_yaxes(title='Ichimoku Visual', visible=True,
@@ -888,9 +871,7 @@ def obvf(df):
     fig_obv.update_xaxes(title='Timeline', showticklabels=True, visible=True)
     fig_obv.update_yaxes(title="On-Balance Volume",
                          showticklabels=True, visible=True)
-    # fig_obv.update_traces(texttemplate='%{text:.2s}', textposition='outside')
     fig_obv.update_layout(height=400)
-# , uniformtext_minsize=8, uniformtext_mode='hide')
     l_obv = df["volume_obv"].iloc[-1]
     l_obv = l_obv/100000
     return l_obv, fig_obv
