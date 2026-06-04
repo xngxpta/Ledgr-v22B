@@ -16,22 +16,12 @@ import plotly.express as px
 import plotly.graph_objects as go
 import streamlit as st
 import yfinance as yf
-# import matplotlib as plt
-# import seaborn as sns
 from prophet import Prophet
 from prophet.plot import plot_plotly, plot_components_plotly
 import os
-#from st_paywall import add_auth
 
 # Page Setup ##############################################
-# st.#set_page_config(page_title='Ledgr | Forecasting Engine',
-#            layout="wide", initial_sidebar_state="expanded")
-# from auth.session import init_session
-
-# init_session()
-
 direc = os.getcwd()
-#add_auth(required=True)
 logofile = f'{direc}/pages/appdata/imgs/Ledgr_Logo_F2.png'
 url_stripe = "https://buy.stripe.com/6oUbJ35eaew4bfj0xY0480e"
 st.logo(logofile, size="medium", link='https://alphaledgr.com/',
@@ -67,8 +57,6 @@ url_blog = 'https://www.alphaledgr.com/Blog'
 url_linkedin = "https://www.linkedin.com/company/ledgrapp/"
 choicelist = ["Prophet", "LSTM", "Others"]
 st.write("  ---------------------------------------------------------------  ")
-
-#authenticator.logout("Logout", "sidebar")
 st.title("Forecast Price Ranges.")
 st.header("Just select a stock ticker.", divider='rainbow')
 
