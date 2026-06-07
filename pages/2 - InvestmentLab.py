@@ -112,7 +112,7 @@ with st.form("pfinputs"):
         st.cache_resource.clear()
         st.cache_data.clear()
         st.success("Thanks! Optimization en course!")
-        pf_df = pd.DataFrame(
+        df = pd.DataFrame(
             {
                 "Timestamp": dt.datetime.now(),
                 "Total Allocated Amount": tav,
