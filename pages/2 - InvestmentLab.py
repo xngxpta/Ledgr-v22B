@@ -79,9 +79,12 @@ st.sidebar.caption(
                    Global Counterparts."""
 )
 # ################################################################
-url_stripe = "https://book.stripe.com/cNi6oJ3625Zy97b94u0480g"
+url_stripe = "https://book.stripe.com/9B6bJ3gWS87G97b80q0480f"
 url_stripe_2 = "https://buy.stripe.com/6oUbJ35eaew4bfj0xY0480e"
-
+st.sidebar.link_button("Try Ledgr Pro!", url_stripe, type="primary",
+                       disabled=False)
+st.sidebar.link_button("Become a Patron!", url_stripe_2, type="primary",
+                    disabled=False)
 # #############################################################
 bc1, bc2 = st.columns(2)
 with bc1:
@@ -91,13 +94,6 @@ with bc1:
     st.info("Create Efficient Portfolios with Optimized Allocation.")
 with bc2:
     st.video("https://youtu.be/wu0nDaMyIG4?si=f7Y0v_I_Am7JwGe6")
-
-
-st.warning("Please Click the Access/Day @ INR 99/- to access the complete set of tools!!")
-st.link_button("Access Pro for a day!", url_stripe, type="primary", disabled=False, use_container_width=True)
-st.success("LedgrTeam would be elated if you Support us Monthly for a small price of INR 349/-")
-st.link_button("Become a Patron!", url_stripe_2, type="secondary", disabled=False, use_container_width=True)
-# ####
 
 
 # ##################################################
@@ -128,6 +124,10 @@ pf_df = pd.DataFrame(
         "Risk Allowance": volatility_tolerance_range,
     }
 )
+# st.write(pf_df)
+# pf_df.to_csv(f"{bpath}/appdata/PortfolioLog.csv")
+
+
 
 @st.cache_data
 def get_stock(ticker):
@@ -153,9 +153,6 @@ def combine_stocks(tickers):
 
 
 df = combine_stocks(stocks_selected)
-
-
-
 
 
 @st.cache_resource
