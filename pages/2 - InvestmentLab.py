@@ -80,64 +80,7 @@ url_stripe = "https://buy.stripe.com/6oUbJ35eaew4bfj0xY0480e"
 
 st.sidebar.link_button("Join Us!", url_stripe, type="primary",
                        disabled=False, use_container_width=True)
-
-# #############################################################
-bc1, bc2 = st.columns(2)
-with bc1:
-    st.title(":InvestmentLab:")
-    st.write("Maximize Returns.")
-    st.write("Mitigate Risks.")
-    st.info("Create Efficient Portfolios with Optimized Allocation.")
-with bc2:
-    st.video("https://youtu.be/wu0nDaMyIG4?si=f7Y0v_I_Am7JwGe6")
-# Functions
-
-
-# ##################################################
-
-st.subheader("Inputs for Optimization & Allocation")
-with st.form("pfinputs"):
-    stocks_selected = st.multiselect("Select Assets Here..", tickerlist)
-    tav = st.number_input("Amount to be allocated:  ", 999, 9999999999, 100000)
-    exp_returns = st.slider(
-        "What levels of Returns are you expecting, realistically", 0, 100, (15, 35)
-    )
-    volatility_tolerance_range = st.slider(
-        "Indicate the volatility range that you prefer/can afford", 0, 30, (15, 25)
-    )
-    submitted = st.form_submit_button("Submit")
-    if not submitted:
-        st.stop()
-    if submitted:
-        st.cache_resource.clear()
-        st.cache_data.clear()
-        st.success("Thanks! Optimization en course!")
-        df = pd.DataFrame(
-            {
-                "Timestamp": dt.datetime.now(),
-                "Total Allocated Amount": tav,
-                "Customers Expected Returns": exp_returns,
-                "Risk Allowance": volatility_tolerance_range,
-                "Timestamp": dt.datetime.now(),
-            })
-         
-        
-        # Read in price data
-        # df = pd.to_csv("tests/resources/stock_prices.csv", parse_dates=True, index_col="date")
-    
-        # Calculate expected returns and sample covariance
-mu = expected_returns.mean_historical_return(df)
-S = risk_models.sample_cov(df)
-
-# Optimize for maximal Sharpe ratio
-ef = EfficientFrontier(mu, S)
-raw_weights = ef.max_sharpe()
-cleaned_weights = ef.clean_weights()
-ef.save_weights_to_file("weights.csv")  # saves to file
-
-for name, value in cleaned_weights.items():
-    print(f"{name}: {value:.4f}")
-
+# Functions ###################################################
 @st.cache_data
 def get_stock(ticker):
     ticker1 = ticker + ".NS"
@@ -267,6 +210,87 @@ def ec_op(mu, returns):
     return ec, ec_weights, ec_prf, er_ec, vlt_ec
 
 
+
+@st.cache_resource
+def figs(df, returns, mu, S):
+    fig1 = px.line(df)
+    fig1.update_xaxes(title="Timeline", visible=True, showticklabels=True)
+    fig1.update_yaxes(
+        title="Individual Price Trends", visible=True, showticklabels=True
+    )
+    fig1.update_layout(showlegend=False)
+    figRet = px.bar(returns)
+    figRet.update_xaxes(visible=True, showticklabels=True)
+    figRet.update_layout(showlegend=False)
+    figRet.update_yaxes(title="Returns %", visible=True, showticklabels=True)
+    figRet.update_layout(
+        legend=dict(
+            orientation="h",
+            # entrywidth=150,
+            yanchor="bottom",
+            xanchor="center",
+        )
+    )
+    figRet.update_layout(title="Historic Returns at Daily Intervals", title_x=0.35)
+    figMU = px.bar(df_mu, color=df_mu.index, text_auto=".2M")
+    figMU.update_traces(textfont_size=14, textangle=0, textposition="outside")
+    figMU.update_traces(cliponaxis=False)
+    figMU.update_xaxes(visible=True, showticklabels=True)
+    figMU.update_yaxes(title="Returns %", visible=True, showticklabels=True)
+    figMU.update_layout(title="Mean Returns", title_x=0.25, showlegend=False)
+    figCov = px.imshow(S, text_auto=True, aspect="auto")
+    figCov.update_layout(title="Risk Profile [Covariance Map]", title_x=0.25)
+    return fig1, figRet, figMU, figCov
+# #############################################################
+bc1, bc2 = st.columns(2)
+with bc1:
+    st.title(":InvestmentLab:")
+    st.write("Maximize Returns.")
+    st.write("Mitigate Risks.")
+    st.info("Create Efficient Portfolios with Optimized Allocation.")
+with bc2:
+    st.video("https://youtu.be/wu0nDaMyIG4?si=f7Y0v_I_Am7JwGe6")
+# ##################################################
+
+st.subheader("Inputs for Optimization & Allocation")
+with st.form("pfinputs"):
+    stocks_selected = st.multiselect("Select Assets Here..", tickerlist)
+    tav = st.number_input("Amount to be allocated:  ", 999, 9999999999, 100000)
+    exp_returns = st.slider(
+        "What levels of Returns are you expecting, realistically", 0, 100, (15, 35)
+    )
+    volatility_tolerance_range = st.slider(
+        "Indicate the volatility range that you prefer/can afford", 0, 30, (15, 25)
+    )
+    submitted = st.form_submit_button("Submit")
+    if not submitted:
+        st.stop()
+    if submitted:
+        st.cache_resource.clear()
+        st.cache_data.clear()
+        pass
+        
+st.success("Thanks! Optimization en course!")
+df = pd.DataFrame({"Timestamp": dt.datetime.now(),
+                   "Total Allocated Amount": tav,
+                   "Customers Expected Returns": exp_returns,
+                   "Risk Allowance": volatility_tolerance_range,
+                   "Timestamp": dt.datetime.now(),
+                  })
+
+# Calculate expected returns and sample covariance
+mu = expected_returns.mean_historical_return(df)
+S = risk_models.sample_cov(df)
+
+# Optimize for maximal Sharpe ratio
+ef = EfficientFrontier(mu, S)
+raw_weights = ef.max_sharpe()
+cleaned_weights = ef.clean_weights()
+ef.save_weights_to_file("weights.csv")  # saves to file
+
+for name, value in cleaned_weights.items():
+    print(f"{name}: {value:.4f}")
+
 ec, ec_weights, ec_prf, er_ec, vlt_ec = ec_op(mu, returns)
 ef, weights_mvar, cleaned_weights, ef_prf, shrp, er, vlt = ef_op(mu, S)
 hrp, hrp_weights, shrp_hrp, er_hrp, vlt_hrp = hrp_op(returns)
@@ -300,37 +324,6 @@ fig_return_global.update_yaxes(
 )
 fig_return_global.update_layout(title="Returns Calculated", showlegend=False)
 
-
-@st.cache_resource
-def figs(df, returns, mu, S):
-    fig1 = px.line(df)
-    fig1.update_xaxes(title="Timeline", visible=True, showticklabels=True)
-    fig1.update_yaxes(
-        title="Individual Price Trends", visible=True, showticklabels=True
-    )
-    fig1.update_layout(showlegend=False)
-    figRet = px.bar(returns)
-    figRet.update_xaxes(visible=True, showticklabels=True)
-    figRet.update_layout(showlegend=False)
-    figRet.update_yaxes(title="Returns %", visible=True, showticklabels=True)
-    figRet.update_layout(
-        legend=dict(
-            orientation="h",
-            # entrywidth=150,
-            yanchor="bottom",
-            xanchor="center",
-        )
-    )
-    figRet.update_layout(title="Historic Returns at Daily Intervals", title_x=0.35)
-    figMU = px.bar(df_mu, color=df_mu.index, text_auto=".2M")
-    figMU.update_traces(textfont_size=14, textangle=0, textposition="outside")
-    figMU.update_traces(cliponaxis=False)
-    figMU.update_xaxes(visible=True, showticklabels=True)
-    figMU.update_yaxes(title="Returns %", visible=True, showticklabels=True)
-    figMU.update_layout(title="Mean Returns", title_x=0.25, showlegend=False)
-    figCov = px.imshow(S, text_auto=True, aspect="auto")
-    figCov.update_layout(title="Risk Profile [Covariance Map]", title_x=0.25)
-    return fig1, figRet, figMU, figCov
 
 
 fig1, figRet, figMU, figCov = figs(df, returns, mu, S)
