@@ -97,6 +97,32 @@ st.warning("Please Click the Access/Day @ INR 99/- to access the complete set of
 st.link_button("Access Pro for a day!", url_stripe, type="primary", disabled=False, use_container_width=True)
 st.success("LedgrTeam would be elated if you Support us Monthly for a small price of INR 349/-")
 st.link_button("Become a Patron!", url_stripe_2, type="secondary", disabled=False, use_container_width=True)
+# ####
+
+@st.cache_data
+def get_stock(ticker):
+    ticker1 = ticker + ".NS"
+    ticker2 = yf.Ticker(ticker1)
+    data = ticker2.history(period="5y")[["Close"]]
+    data[f"{ticker}"] = data["Close"]
+    data = data[[f"{ticker}"]]
+    # st.write("Closed data last", data.tail(3))
+    return data
+
+
+@st.cache_data
+def combine_stocks(tickers):
+    data_frames = []
+    for i in tickers:
+        data_frames.append(get_stock(i))
+    df_merged = reduce(
+        lambda left, right: pd.merge(left, right, on=["Date"], how="outer"), data_frames
+    )
+    # st.write(df_merged.head())
+    return df_merged
+
+
+df = combine_stocks(stocks_selected)
 
 
 # ##################################################
@@ -131,31 +157,6 @@ pf_df = pd.DataFrame(
 # pf_df.to_csv(f"{bpath}/appdata/PortfolioLog.csv")
 
 
-
-@st.cache_data
-def get_stock(ticker):
-    ticker1 = ticker + ".NS"
-    ticker2 = yf.Ticker(ticker1)
-    data = ticker2.history(period="5y")[["Close"]]
-    data[f"{ticker}"] = data["Close"]
-    data = data[[f"{ticker}"]]
-    # st.write("Closed data last", data.tail(3))
-    return data
-
-
-@st.cache_data
-def combine_stocks(tickers):
-    data_frames = []
-    for i in tickers:
-        data_frames.append(get_stock(i))
-    df_merged = reduce(
-        lambda left, right: pd.merge(left, right, on=["Date"], how="outer"), data_frames
-    )
-    # st.write(df_merged.head())
-    return df_merged
-
-
-df = combine_stocks(stocks_selected)
 
 
 @st.cache_resource
