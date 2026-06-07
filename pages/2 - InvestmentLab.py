@@ -122,7 +122,7 @@ with st.form("pfinputs"):
         )
         
         # Read in price data
-        df = pd.read_csv("tests/resources/stock_prices.csv", parse_dates=True, index_col="date")
+        df = pd.to_csv("tests/resources/stock_prices.csv", parse_dates=True, index_col="date")
         pass
         # Calculate expected returns and sample covariance
 mu = expected_returns.mean_historical_return(df)
