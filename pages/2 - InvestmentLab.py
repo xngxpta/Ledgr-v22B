@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 # Created on Mon Dec 12 00:34:13 2022
 # Author: r_xngxpta; xngxpta@gmail.com
 # !/usr/bin/env python310
@@ -11,22 +13,21 @@
 # __emails__ = 'r_xn@alphaledgr.com / response@alphaledgr.com'
 # __status__ = 'In active development'
 
-# Imports
-import numpy as np
+# import numpy as np
 import streamlit as st
 import pandas as pd
 import plotly.express as px
-import matplotlib as plt
+# import matplotlib as plt
 from pypfopt.efficient_frontier import EfficientFrontier
 
-# from pypfopt import objective_functions, plotting
+from pypfopt import objective_functions, plotting
 from pypfopt.discrete_allocation import DiscreteAllocation, get_latest_prices
 from pypfopt import HRPOpt
 from pypfopt import CLA
 from pypfopt import EfficientSemivariance
 from pypfopt import EfficientCVaR
-
-# import copy
+from pypfopt import risk_models
+from pypfopt import expected_returns
 import os
 import datetime as dt
 from pypfopt.expected_returns import mean_historical_return
@@ -34,20 +35,14 @@ from pypfopt import risk_models
 from pypfopt.risk_models import CovarianceShrinkage
 import yfinance as yf
 
-# from ta.utils import dropna
+from ta.utils import dropna
 from functools import reduce
 import streamlit as st
-# from auth.session import init_session
-#from st_paywall import add_auth
-
-# init_session()
+# #################################################################################
 
 st.set_page_config(page_title="Ledgr | Optimization Engine", layout="wide")
 
 direc = os.getcwd()
-#add_auth(required=True)
-# direc = f'{direc}/Documents/Ledgr'
-# bpath = f'{direc}/pages'
 logofile = f"{direc}/pages/appdata/imgs/Ledgr_Logo_F2.png"
 st.logo(logofile, link="https://alphaledgr.com/",
         icon_image=logofile)
@@ -65,7 +60,7 @@ ledgrblog = f"{direc}/pages/appdata/imgs/Ledgr_Logo_F2.png"
 tickerdb = pd.read_csv(pathtkr)
 tickerlist = tickerdb["SYMBOL"]
 # ###################### #######################################
-url_ytube = "https://www.youtube.com/@LedgrInc"
+url_ytube = "https://www.youtube.com/@LedgrBase"
 url_fb = "https://www.facebook.com/share/1BnXaYvRzV/"
 url_insta = "https://www.instagram.com/alphaledgr/"
 url_blog = "https://www.alphaledgr.com/Blog"
@@ -80,7 +75,7 @@ st.sidebar.caption(
                    Ledgr's smaller Market in hand with their
                    Global Counterparts."""
 )
-# ################################################################
+
 url_stripe = "https://buy.stripe.com/6oUbJ35eaew4bfj0xY0480e"
 
 st.sidebar.link_button("Join Us!", url_stripe, type="primary",
@@ -95,11 +90,13 @@ with bc1:
     st.info("Create Efficient Portfolios with Optimized Allocation.")
 with bc2:
     st.video("https://youtu.be/wu0nDaMyIG4?si=f7Y0v_I_Am7JwGe6")
+# Functions
 
 
 # ##################################################
+
+st.subheader("Inputs for Optimization & Allocation")
 with st.form("pfinputs"):
-    st.subheader("Inputs for Optimization & Allocation")
     stocks_selected = st.multiselect("Select Assets Here..", tickerlist)
     tav = st.number_input("Amount to be allocated:  ", 999, 9999999999, 100000)
     exp_returns = st.slider(
@@ -114,21 +111,31 @@ with st.form("pfinputs"):
     if submitted:
         st.cache_resource.clear()
         st.cache_data.clear()
-        pass
+        st.success("Thanks! Optimization en course!")
+        pf_df = pd.DataFrame(
+            {
+                "Timestamp": dt.datetime.now(),
+                "Total Allocated Amount": tav,
+                "Customers Expected Returns": exp_returns,
+                "Risk Allowance": volatility_tolerance_range,
+            }
+        )
         
-st.success("Thanks! Optimization en course!")
-pf_df = pd.DataFrame(
-    {
-        "Timestamp": dt.datetime.now(),
-        "Total Allocated Amount": tav,
-        "Customers Expected Returns": exp_returns,
-        "Risk Allowance": volatility_tolerance_range,
-    }
-)
-# st.write(pf_df)
-# pf_df.to_csv(f"{bpath}/appdata/PortfolioLog.csv")
+        # Read in price data
+        df = pd.read_csv("tests/resources/stock_prices.csv", parse_dates=True, index_col="date")
+        pass
+        # Calculate expected returns and sample covariance
+mu = expected_returns.mean_historical_return(df)
+S = risk_models.sample_cov(df)
 
+# Optimize for maximal Sharpe ratio
+ef = EfficientFrontier(mu, S)
+raw_weights = ef.max_sharpe()
+cleaned_weights = ef.clean_weights()
+ef.save_weights_to_file("weights.csv")  # saves to file
 
+for name, value in cleaned_weights.items():
+    print(f"{name}: {value:.4f}")
 
 @st.cache_data
 def get_stock(ticker):
@@ -260,6 +267,11 @@ def ec_op(mu, returns):
 
 
 ec, ec_weights, ec_prf, er_ec, vlt_ec = ec_op(mu, returns)
+ef, weights_mvar, cleaned_weights, ef_prf, shrp, er, vlt = ef_op(mu, S)
+hrp, hrp_weights, shrp_hrp, er_hrp, vlt_hrp = hrp_op(returns)
+cla, cla_weights, cla_prf, shrp_cla, er_cla, vlt_cla = cla_op(mu, S3)
+es, es_weights, es_prf, srtn_es, er_es, vlt_es = es_op(mu, returns)
+ec, ec_weights, ec_prf, er_ec, vlt_ec = ec_op(mu, returns)
 st.write("  --------  ")
 
 with st.success("Calling Functions...."):
@@ -269,11 +281,7 @@ with st.success("Calling Functions...."):
     df_mu.index.names = ["Securities"]
     df_mu.columns.names = ["Mean Returns from Asset"]
 
-ef, weights_mvar, cleaned_weights, ef_prf, shrp, er, vlt = ef_op(mu, S)
-hrp, hrp_weights, shrp_hrp, er_hrp, vlt_hrp = hrp_op(returns)
-cla, cla_weights, cla_prf, shrp_cla, er_cla, vlt_cla = cla_op(mu, S3)
-es, es_weights, es_prf, srtn_es, er_es, vlt_es = es_op(mu, returns)
-ec, ec_weights, ec_prf, er_ec, vlt_ec = ec_op(mu, returns)
+
 
 optimizers = list(["MVAR", "HRP", "CLA", "SVAR", "CoVAR"])
 returns_df = pd.DataFrame([er, er_hrp, er_cla, er_es, er_ec], index=optimizers)
