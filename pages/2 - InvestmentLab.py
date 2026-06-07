@@ -99,31 +99,6 @@ st.success("LedgrTeam would be elated if you Support us Monthly for a small pric
 st.link_button("Become a Patron!", url_stripe_2, type="secondary", disabled=False, use_container_width=True)
 # ####
 
-@st.cache_data
-def get_stock(ticker):
-    ticker1 = ticker + ".NS"
-    ticker2 = yf.Ticker(ticker1)
-    data = ticker2.history(period="5y")[["Close"]]
-    data[f"{ticker}"] = data["Close"]
-    data = data[[f"{ticker}"]]
-    # st.write("Closed data last", data.tail(3))
-    return data
-
-
-@st.cache_data
-def combine_stocks(tickers):
-    data_frames = []
-    for i in tickers:
-        data_frames.append(get_stock(i))
-    df_merged = reduce(
-        lambda left, right: pd.merge(left, right, on=["Date"], how="outer"), data_frames
-    )
-    # st.write(df_merged.head())
-    return df_merged
-
-
-df = combine_stocks(stocks_selected)
-
 
 # ##################################################
 with st.form("pfinputs"):
@@ -153,8 +128,32 @@ pf_df = pd.DataFrame(
         "Risk Allowance": volatility_tolerance_range,
     }
 )
-# st.write(pf_df)
-# pf_df.to_csv(f"{bpath}/appdata/PortfolioLog.csv")
+
+@st.cache_data
+def get_stock(ticker):
+    ticker1 = ticker + ".NS"
+    ticker2 = yf.Ticker(ticker1)
+    data = ticker2.history(period="5y")[["Close"]]
+    data[f"{ticker}"] = data["Close"]
+    data = data[[f"{ticker}"]]
+    # st.write("Closed data last", data.tail(3))
+    return data
+
+
+@st.cache_data
+def combine_stocks(tickers):
+    data_frames = []
+    for i in tickers:
+        data_frames.append(get_stock(i))
+    df_merged = reduce(
+        lambda left, right: pd.merge(left, right, on=["Date"], how="outer"), data_frames
+    )
+    # st.write(df_merged.head())
+    return df_merged
+
+
+df = combine_stocks(stocks_selected)
+
 
 
 
