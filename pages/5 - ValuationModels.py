@@ -94,11 +94,11 @@ def CAPM(stock_a, stock_m):
     st.write('\n')
     al0 = alpha.round(4)
     alpha_m = 100*al0
-    st.write(25*'==')
+    st.write(20*'==')
     st.metric('Calculated Beta - Linear Regression: ',
               beta_reg.round(4))
     st.metric('Calculated Alpha: ', alpha_m)
-    st.write(25*'==')
+    st.write(20*'==')
     plt.figure(figsize=(13, 9))
     plt.axvline(0, color='grey', alpha=0.5)
     plt.axhline(0, color='grey', alpha=0.5)
