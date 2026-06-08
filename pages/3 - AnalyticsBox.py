@@ -962,10 +962,11 @@ def bb(df):
     fig_bb.update_yaxes(title="Bollingers Bands",
                         showticklabels=True, visible=True)
     l_bbw = df["volatility_bbw"].iloc[-1]
-    fig_bb2 = make_subplots(rows=2, cols=1, shared_xaxes=False,
+    fig_bb2 = make_subplots(rows=3, cols=1, shared_xaxes=False,
                             subplot_titles=(
                                 "Percentile", "Bandwidth / Squeeze [%]"),
-                            row_width=[0.35, 0.65])
+                            row_width=[0.3, 0.3, 0.3])
+    fig_bb2.add_trace(go.
     fig_bb2.add_trace(go.Scatter(
         x=df.index, y=df["volatility_bbp"], name='Percentile', showlegend=False), row=1, col=1)
     fig_bb2.update_xaxes(visible=True, showticklabels=True)
@@ -1154,19 +1155,21 @@ with st.container(border=True):
     elif choix1 == "Moving Average Convergence Divergence (MACD)":
         
         st.subheader("Moving Average Convergence-Divergence")
-                
-        fig_macd = px.line(df["trend_macd"])
-        fig_macd.update_layout(title='MACD', showlegend=False)
+        fig_macd = make_subplots(rows=3, cols=1, shared_xaxes=True,
+                                 row_width=[0.3, 0.3, 0.3])
+        fig_macd.add_trace(go.Ohlc(x=df.index, open=df["Open"], high=df["High"],
+                          low=df["Low"], close=df["Close"]), row=1, col=1)
         fig_macd.update_xaxes(visible=True, showticklabels=True)
-        fig_macd.update_yaxes(title='MACD Signal',
-                              visible=True, showticklabels=True)
-        fig_macd_signal = px.bar(
-            df["trend_macd_signal"], color=df["trend_macd_signal"])
-        fig_macd_signal.update_layout(
-            title='MACD Signal', height=300, showlegend=False)
-        fig_macd_signal.update_xaxes(visible=True, showticklabels=True)
-        fig_macd_signal.update_yaxes(
-        title='MACD Signal', visible=True, showticklabels=True)
+        fig_macd.update_yaxes(visible=True, showticklabels=True)
+        
+        fig_macd.add_trace(go.Scatter(df["trend_macd"]), row=2, col=1)
+        fig_macd.update_layout(title='MACD Trend', showlegend=False)
+        fig_macd.add_trace(go.bar(df["trend_macd_signal"], color=df["trend_macd_signal"]), row=3, col=1)
+#        fig_macd_signal.update_layout(
+#            title='MACD Signal', height=300, showlegend=False)
+#        fig_macd_signal.update_xaxes(visible=True, showticklabels=True)
+#        fig_macd_signal.update_yaxes(
+#            title='MACD Signal', visible=True, showticklabels=True)
 
         fig_macd_diff = px.area(df["trend_macd_diff"])
         fig_macd_diff.update_layout(
