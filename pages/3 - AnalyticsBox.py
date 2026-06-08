@@ -1157,8 +1157,11 @@ with st.container(border=True):
         st.subheader("Moving Average Convergence-Divergence")
         fig_macd = make_subplots(rows=3, cols=1, shared_xaxes=True,
                                  row_width=[0.3, 0.3, 0.3])
-        fig_macd.add_trace(go.Ohlc(x=df.index, open=df["Open"], high=df["High"],
-                          low=df["Low"], close=df["Close"]), row=1, col=1)
+        fig_macd.add_trace(go.Ohlc(x=df.index, open=df["Open"],
+                                   high=df["High"],
+                                   low=df["Low"],
+                                   close=df["Close"]),
+                           row=1, col=1)
         fig_macd.update_xaxes(visible=True, showticklabels=True)
         fig_macd.update_yaxes(visible=True, showticklabels=True)
         
@@ -1179,7 +1182,6 @@ with st.container(border=True):
         title='MACD Diff', visible=True, showticklabels=True)
         mcd1, mcd2, mcd3 = st.columns([2, 1, 1])
         st.plotly_chart(fig_macd, use_container_width=True)
-        st.info("The MACD Plot indicates that...")
         st.plotly_chart(fig_macd_diff, use_container_width=True)
         st.info("The MACD Diff Plot indicates that refers to the difference or divergence between moving averages, which is the core calculation of the MACD indicator. It is calculated by subtracting the 26-period exponential moving average (EMA) from the 12-period EMA, creating a MACD plot.")
         st.plotly_chart(fig_macd_signal, use_container_width=True)
