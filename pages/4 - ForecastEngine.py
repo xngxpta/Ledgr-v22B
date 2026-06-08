@@ -41,9 +41,6 @@ pathtkr = f"{direc}/pages/appdata/tickerlist_y.csv"
 tickerdb = pd.read_csv(pathtkr)
 tickerlist = tickerdb["SYMBOL"]
 # Pagework 1 - Inputs ###################################################
-
-
-st.title(":Forecast Engine:")
 # Icons and Links ###########################
 ytube = f"{direc}/pages/appdata/imgs/ytube.svg"
 fbook = f"{direc}/pages/appdata/imgs/fbook.svg"
