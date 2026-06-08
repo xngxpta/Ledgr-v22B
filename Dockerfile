@@ -1,32 +1,33 @@
 
-FROM python:3.9-slim-buster
-WORKDIR /app
-COPY requirements.txt .
-RUN pip install -r requirements.txt
-COPY . .
-EXPOSE 8501
-CMD ["streamlit", "run", "Home.py", "--server.port=8501", "--server.address=0.0.0.0"]
+##FROM python:3.9-slim-buster
+#WORKDIR /app
+#COPY requirements.txt .
+#RUN pip install -r requirements.txt
+#COPY . .
+#EXPOSE 8501
+#CMD ["streamlit", "run", "Home.py", "--server.port=8501", "--server.address=0.0.0.0"]
 
 
-
-#FROM python:3.12-slim
+FROM python:3.10-slim
 
 
 # we probably need build tools?
-#RUN apt-get update \
-#     && apt-get install --yes --no-install-recommends \
-#    gcc \
-#    g++ \
-#    build-essential \
-#    python3-dev
+RUN apt-get update \
+&& apt-get install --yes --no-install-recommends \
+    gcc \
+    g++ \
+    build-essential \
+    python3-dev
 
-#WORKDIR /app
-#COPY requirements.txt requirements.txt
+WORKDIR /app
 
-#RUN pip install --no-cache-dir -r requirements.txt
+COPY requirements.txt requirements.txt
 
-#EXPOSE 8501
+RUN pip install --no-cache-dir -r requirements.txt
 
-#COPY . .
+EXPOSE 8501
 
-#CMD ["streamlit", "run", "Home.py"]
+COPY . .
+
+CMD ["streamlit", "run", "Home.py", "--server.port=8501", "--server.address=0.0.0.0"]
+
