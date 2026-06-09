@@ -966,7 +966,7 @@ def bb(df):
                             subplot_titles=(
                                 "Percentile", "Bandwidth / Squeeze [%]"),
                             row_width=[0.3, 0.3, 0.3])
-    fig_bb2.add_trace(go.
+    
     fig_bb2.add_trace(go.Scatter(
         x=df.index, y=df["volatility_bbp"], name='Percentile', showlegend=False), row=1, col=1)
     fig_bb2.update_xaxes(visible=True, showticklabels=True)
