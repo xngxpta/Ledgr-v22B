@@ -18,15 +18,25 @@ import yfinance as yf
 import plotly.express as px
 import plotly.graph_objs as go
 from plotly.subplots import make_subplots
+# import seaborn as sns
+# import matplotlib as plt
 import streamlit as st
 from ta.momentum import RSIIndicator
 import json
 from ta import add_all_ta_features
+# from auth.session import init_session
+
+# init_session()
 direc = os.getcwd()
+
 st.set_page_config(page_title='Ledgr | Analytics', layout="wide",
                    initial_sidebar_state="expanded")
+
+
 url_stripe = "https://book.stripe.com/9B6bJ3gWS87G97b80q0480f"
 url_stripe_2 = "https://buy.stripe.com/6oUbJ35eaew4bfj0xY0480e"
+st.sidebar.link_button("Try Ledgr Pro!", url_stripe, type="primary",
+                       disabled=False)
 st.sidebar.link_button("Become a Patron!", url_stripe_2, type="primary",
                        disabled=False)
 pathtkr = f"{direc}/pages/appdata/tickerlist_y.csv"
@@ -44,18 +54,22 @@ st.logo(logofile, size="medium", link='https://alphaledgr.com/',
         icon_image=logofile)
 # ################################################################
 # ###################### #######################################
-url_ytube = "https://www.youtube.com/@LedgrBase"
+url_ytube = "https://www.youtube.com/@LedgrInc"
 url_fb = "https://www.facebook.com/share/1BnXaYvRzV/"
 url_insta = 'https://www.instagram.com/alphaledgr/'
 url_blog = 'https://www.alphaledgr.com/Blog'
 url_linkedin = "https://www.linkedin.com/company/ledgrapp/"
 # ############################################################
+
+# authenticator.logout("Logout", "sidebar")
 st.title("Analyze any Asset. In-Depth, at ease.")
 
 with st.sidebar:
     st.image(logofile, use_container_width=True)
     st.caption("Your unified Fintelligence Portal!")
     st.write("Analyze Assets, Get tactical insights!")
+    # st.link_button("Access Pro!", url_stripe, type="primary",
+             #      disabled=False, use_container_width="True")
 mx1, mx2 = st.columns(2)
 with mx1:
     st.title(":AnalyticsBox:")
@@ -64,10 +78,17 @@ with mx1:
     st.info("**Perform Technical Analyses, grab insights.**")
 with mx2:
     st.video('https://youtu.be/CkMui1TdMqg?si=o1Jq44z8wxWYMsKn')
-# #################################
-
 # Form and Inputs ############################################################
-stock = st.selectbox("Please select stock ticker", tickerlist)
+
+
+with st.form('inputs'):
+    stock = st.selectbox("Please select stock ticker", tickerlist)
+    submitted = st.form_submit_button("Proceed")
+    if not submitted: 
+        st.stop()
+    if submitted:
+        pass
+
 stock2 = stock + ".NS"
 
 
@@ -75,7 +96,10 @@ stock2 = stock + ".NS"
 def getdata(stock2):
     stock2 = yf.Ticker(stock2)
     df2 = stock2.history(period="5y")
+    # df0.to_csv(f"{direc}/pages/appdata/OHLC/{stock2}.csv")
     di = df2.index
+    # df2 = pd.read_csv(f"{direc}/pages/appdata/OHLC/{stock2}.csv", header=[0])
+    # df2 = df2.set_index(['Date'])
     df2 = df2.drop(['Dividends', 'Stock Splits'], axis=1)
     return di, df2
 
@@ -88,12 +112,16 @@ def dta(df2):
     df = add_all_ta_features(df2,
                              open='Open', high='High', low='Low',
                              close='Close', volume='Volume')
+#    df. pd.DataFrame(df2)
     return df
 
 
 df = dta(df2)
 df_col = pd.DataFrame(df.columns)
 df.dropna()
+
+# df_col.to_csv("Analytics Columns DF List.csv")
+# st.write("DTA", df)
 
 
 @st.cache_resource
@@ -188,6 +216,8 @@ with st.container(border=True):
             st.write("**Sector** - ", sector)
         except Exception:
             st.write('Data Unreported')
+    #        fullTimeEmployees = dfi.at['fullTimeEmployees', 'Details']
+    #        st.write("**Employees** - ", fullTimeEmployees)
 
     with su2:
         st.subheader("Trading Ranges")
@@ -225,6 +255,8 @@ with st.container(border=True):
         try:
             avg50 = dfi.at['fiftyDayAverage', 'Details']
             st.write('50 Day Avg. - ', avg50, border=True)
+            # twoHundredDayAverage = dfi.at['twoHundredDayAverage', 'Details']
+            # st.write('200D Avg - ', twoHundredDayAverage)
         except Exception:
             st.write('Data Unreported')
 st.write("  --------------  ")
@@ -582,6 +614,12 @@ def ichi(df):
     fig_ichi.add_trace(go.Scatter(
         x=df.index, y=df["trend_ichimoku_base"],
         name='Ichimoku Base', showlegend=True))
+#  fig_ichi.add_trace(go.Scatter(
+#      x=df.index, y=df["trend_ichimoku_a"], name='Ichimoku A',
+#        showlegend=False))
+#  fig_ichi.add_trace(go.Scatter(
+#       x=df.index, y=df["trend_ichimoku_b"], name='Ichimoku B',
+#  showlegend=False))
     l_ichi_b = df["trend_ichimoku_base"].iloc[-1]
 
     fig_ichi.update_layout(xaxis_rangeslider_visible=False)
@@ -597,6 +635,7 @@ def ichi(df):
     fig_ichi2.add_trace(go.Scatter(
         x=df.index, y=df["trend_visual_ichimoku_b"],
         name='Ichimoku B - Visual', showlegend=False))
+    # fig_ichi2.update_layout(xaxis_rangeslider_visible=False)
     fig_ichi2.update_layout(height=350, showlegend=False)
     fig_ichi2.update_xaxes(visible=False, showticklabels=True)
     fig_ichi2.update_yaxes(title='Ichimoku Visual', visible=True,
@@ -842,7 +881,9 @@ def obvf(df):
     fig_obv.update_xaxes(title='Timeline', showticklabels=True, visible=True)
     fig_obv.update_yaxes(title="On-Balance Volume",
                          showticklabels=True, visible=True)
+    # fig_obv.update_traces(texttemplate='%{text:.2s}', textposition='outside')
     fig_obv.update_layout(height=400)
+# , uniformtext_minsize=8, uniformtext_mode='hide')
     l_obv = df["volume_obv"].iloc[-1]
     l_obv = l_obv/100000
     return l_obv, fig_obv
@@ -962,11 +1003,10 @@ def bb(df):
     fig_bb.update_yaxes(title="Bollingers Bands",
                         showticklabels=True, visible=True)
     l_bbw = df["volatility_bbw"].iloc[-1]
-    fig_bb2 = make_subplots(rows=3, cols=1, shared_xaxes=False,
+    fig_bb2 = make_subplots(rows=2, cols=1, shared_xaxes=False,
                             subplot_titles=(
                                 "Percentile", "Bandwidth / Squeeze [%]"),
-                            row_width=[0.3, 0.3, 0.3])
-    
+                            row_width=[0.35, 0.65])
     fig_bb2.add_trace(go.Scatter(
         x=df.index, y=df["volatility_bbp"], name='Percentile', showlegend=False), row=1, col=1)
     fig_bb2.update_xaxes(visible=True, showticklabels=True)
@@ -1153,40 +1193,34 @@ with st.container(border=True):
             st.plotly_chart(fig_ema, use_container_width=True)
 
     elif choix1 == "Moving Average Convergence Divergence (MACD)":
-        
         st.subheader("Moving Average Convergence-Divergence")
-        fig_macd = make_subplots(rows=3, cols=1, shared_xaxes=True,
-                                 row_width=[0.3, 0.3, 0.3])
-        fig_macd.add_trace(go.Ohlc(x=df.index, open=df["Open"],
-                                   high=df["High"],
-                                   low=df["Low"],
-                                   close=df["Close"]),
-                           row=1, col=1)
+        fig_macd = px.area(df["trend_macd"])
+        fig_macd.update_layout(title='MACD', showlegend=False)
         fig_macd.update_xaxes(visible=True, showticklabels=True)
-        fig_macd.update_yaxes(visible=True, showticklabels=True)
-        
-        fig_macd.add_trace(go.Scatter(df["trend_macd"]), row=2, col=1)
-        fig_macd.update_layout(title='MACD Trend', showlegend=False)
-        fig_macd.add_trace(go.bar(df["trend_macd_signal"], color=df["trend_macd_signal"]), row=3, col=1)
-#        fig_macd_signal.update_layout(
-#            title='MACD Signal', height=300, showlegend=False)
-#        fig_macd_signal.update_xaxes(visible=True, showticklabels=True)
-#        fig_macd_signal.update_yaxes(
-#            title='MACD Signal', visible=True, showticklabels=True)
+        fig_macd.update_yaxes(title='MACD Signal',
+                              visible=True, showticklabels=True)
+        fig_macd_signal = px.bar(
+            df["trend_macd_signal"], color=df["trend_macd_signal"])
+        fig_macd_signal.update_layout(
+            title='MACD Signal', height=300, showlegend=False)
+        fig_macd_signal.update_xaxes(visible=True, showticklabels=True)
+        fig_macd_signal.update_yaxes(
+            title='MACD Signal', visible=True, showticklabels=True)
 
         fig_macd_diff = px.area(df["trend_macd_diff"])
         fig_macd_diff.update_layout(
-        title='MACD Diff', height=300, showlegend=False)
+            title='MACD Diff', height=300, showlegend=False)
         fig_macd_diff.update_xaxes(visible=True, showticklabels=True)
         fig_macd_diff.update_yaxes(
-        title='MACD Diff', visible=True, showticklabels=True)
+            title='MACD Diff', visible=True, showticklabels=True)
         mcd1, mcd2, mcd3 = st.columns([2, 1, 1])
         st.plotly_chart(fig_macd, use_container_width=True)
+        st.info("The MACD Plot indicates that...")
         st.plotly_chart(fig_macd_diff, use_container_width=True)
         st.info("The MACD Diff Plot indicates that refers to the difference or divergence between moving averages, which is the core calculation of the MACD indicator. It is calculated by subtracting the 26-period exponential moving average (EMA) from the 12-period EMA, creating a MACD plot.")
         st.plotly_chart(fig_macd_signal, use_container_width=True)
-        st.info("""The MACD Signal Plot indicates The MACD signal line is a 9-period exponential moving average (EMA) of the MACD line itself.
-        It helps generate buy and sell signals when the MACD line crosses above or below it.""")
+        st.info("""The MACD Signal Plot indicates The MACD signal line is a 9-period exponential moving average (EMA) of the MACD line itself
+. It helps generate buy and sell signals when the MACD line crosses above or below it.""")
 
     elif choix1 == "Average Directional Movement Index (ADX)":
 
@@ -1892,7 +1926,7 @@ with st.container(border=True):
             foreshadow a bearish reversal on the price chart. A downtrend in
             prices with an uptrend in the Accumulation Distribution Line
             indicates underlying buying pressure (accumulation) that could
-foreshadow a bullish price reversal.""")
+            foreshadow a bullish price reversal.""")
     elif choix5 == "On-Balance Volume (OBV)":
         l_obv, fig_obv = obvf(df)
         ob1, ob2 = st.columns([3, 1])
