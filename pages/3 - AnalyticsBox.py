@@ -40,7 +40,7 @@ st.sidebar.link_button("Try Ledgr Pro!", url_stripe, type="primary",
 st.sidebar.link_button("Become a Patron!", url_stripe_2, type="primary",
                        disabled=False)
 pathtkr = f"{direc}/pages/appdata/tickerlist_y.csv"
-# Icons and Links ###########################
+# Icons and Links ###########################ff
 ytube = f'{direc}/pages/appdata/imgs/ytube.svg'
 fbook = f'{direc}/pages/appdata/imgs/fbook.svg'
 insta = f'{direc}/pages/appdata/imgs/insta.svg'
@@ -1221,7 +1221,7 @@ with st.container(border=True):
         st.plotly_chart(fig_macd_signal, use_container_width=True)
         st.info("""The MACD Signal Plot indicates The MACD signal line is a 9-period exponential moving average (EMA) of the MACD line itself
 . It helps generate buy and sell signals when the MACD line crosses above or below it.""")
-        st.markdown("Know more at the [MACD Gamma Page](https://gamma.app/docs/MACD-Indicator-jezlomsllf0ooho).")
+       # st.markdown("Know more at the [MACD Gamma Page](https://gamma.app/docs/MACD-Indicator-jezlomsllf0ooho).")
 
 
 
