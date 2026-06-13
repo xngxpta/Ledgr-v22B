@@ -1571,6 +1571,7 @@ with values closer to 0 suggesting overbought conditions and values closer to
         st.info("""The Awesome Oscillator compares a 5-period Simple Moving
 Average (SMA) to a 34-period SMA, both applied to the midpoints of candlesticks,
 to measure the difference between short-term and long-term price movements. """)
+        st.line_chart(df['Close'])
         st.plotly_chart(fig_ao, use_container_width=True)
         st.info("""When the AO is above the zero line, it suggests a bullish
 trend, indicating that short-term momentum is rising faster than long-term
