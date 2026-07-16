@@ -32,9 +32,8 @@ url_fbook = "https://www.facebook.com/share/1BnXaYvRzV/"
 url_insta = 'https://www.instagram.com/alphaledgr/'
 url_blog = 'https://www.alphaledgr.com/Blog'
 url_linkedin = "https://www.linkedin.com/company/ledgrapp/"
-url_stripe = "https://buy.stripe.com/6oUbJ35eaew4bfj0xY0480e"
 st.sidebar.link_button("Join Us!", url_stripe, type="primary",
-                   disabled=False, use_container_width=True)
+                       disabled=False, use_container_width=True)
 st.markdown(
             '''
             <div align="center">
