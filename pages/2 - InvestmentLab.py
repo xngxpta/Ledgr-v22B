@@ -79,8 +79,8 @@ st.sidebar.caption(
                    Global Counterparts."""
 )
 # ################################################################
-url_stripe = "https://book.stripe.com/9B6bJ3gWS87G97b80q0480f"
-url_stripe_2 = "https://buy.stripe.com/6oUbJ35eaew4bfj0xY0480e"
+url_stripe = "https://buy.stripe.com/6oU28t21Y2NmbfjdkK0480h"
+url_stripe_2 = "https://buy.stripe.com/dR64iacsh6bx9zi5kk"
 st.sidebar.link_button("Try Ledgr Pro!", url_stripe, type="primary",
                        disabled=False)
 st.sidebar.link_button("Become a Patron!", url_stripe_2, type="primary",
