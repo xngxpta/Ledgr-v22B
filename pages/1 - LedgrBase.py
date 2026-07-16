@@ -41,7 +41,7 @@ url_stripe = "https://buy.stripe.com/6oU28t21Y2NmbfjdkK0480h"
 url_stripe_2 = "https://buy.stripe.com/dR64iacsh6bx9zi5kk"
 st.sidebar.image(logofile)
 st.sidebar.caption("View Markets, get info on funds & monitor your Holdings!")
-st.sidebar.link_button("Join Us!", url_stripe, type="primary",
+st.sidebar.link_button("Join Us!", url_stripe_2, type="primary",
                        disabled=False, use_container_width=True)
 start_date = dt.datetime(2021, 1, 1)
 end_date = dt.datetime.today()
