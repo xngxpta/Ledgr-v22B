@@ -26,7 +26,8 @@ direc = os.getcwd()
 logofile = f'{direc}/pages/appdata/imgs/Ledgr_Logo_F2.png'
 st.logo(logofile, size="medium", link='https://alphaledgr.com/',
         icon_image=logofile)
-url_stripe = "https://buy.stripe.com/6oUbJ35eaew4bfj0xY0480e"
+url_stripe = "https://buy.stripe.com/6oU28t21Y2NmbfjdkK0480h"
+url_stripe_2 = "https://buy.stripe.com/dR64iacsh6bx9zi5kk"
 # authenticator.logout("Logout", "sidebar")
 st.sidebar.image(logofile, use_container_width=True)
 st.sidebar.caption("Select a stock, train the algorithm and predict scenarios")
