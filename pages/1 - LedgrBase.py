@@ -37,7 +37,8 @@ direc = os.getcwd()
 logofile = f"{direc}/pages/appdata/imgs/Ledgr_Logo_F2.png"
 st.logo(logofile, size="medium", link='https://alphaledgr.com/',
         icon_image=logofile)
-url_stripe = "https://buy.stripe.com/6oUbJ35eaew4bfj0xY0480e"
+url_stripe = "https://buy.stripe.com/6oU28t21Y2NmbfjdkK0480h"
+url_stripe_2 = "https://buy.stripe.com/dR64iacsh6bx9zi5kk"
 st.sidebar.image(logofile)
 st.sidebar.caption("View Markets, get info on funds & monitor your Holdings!")
 st.sidebar.link_button("Join Us!", url_stripe, type="primary",
