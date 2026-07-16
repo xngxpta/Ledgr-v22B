@@ -8,7 +8,8 @@ st.title("Terms of Access and Usage")
 st.header(":Ledgr | www.alphaLedgr.com :")
 st.caption("Updated on February 15th 2026")
 direc = os.getcwd()
-
+url_stripe = "https://buy.stripe.com/6oU28t21Y2NmbfjdkK0480h"
+url_stripe_2 = "https://buy.stripe.com/dR64iacsh6bx9zi5kk"
 # Display PDF with custom zoom, alignment, and separators
 pdf_viewer(
     f"{direc}/pages/appdata/Terms-of-Use.pdf",
