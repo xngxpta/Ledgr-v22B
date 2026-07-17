@@ -37,9 +37,21 @@ import yfinance as yf
 # from ta.utils import dropna
 from functools import reduce
 import streamlit as st
-# from auth.session import init_session
+import streamlit.components.v1 as components
 
-# init_session()
+GA_ID = "G-4MRDCEFGB4"
+
+gtag_html = f"""
+<script async src="https://www.googletagmanager.com/gtag/js?id={GA_ID}"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){{dataLayer.push(arguments);}}
+  gtag('js', new Date());
+  gtag('config', '{GA_ID}');
+</script>
+"""
+# Embed the script
+components.html(gtag_html, height=0)
 
 st.set_page_config(page_title="Ledgr | Optimization Engine", layout="wide")
 
