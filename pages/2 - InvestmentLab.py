@@ -82,7 +82,7 @@ st.sidebar.caption(
 url_stripe = "https://buy.stripe.com/6oU28t21Y2NmbfjdkK0480h"
 url_stripe_2 = "https://buy.stripe.com/dR64iacsh6bx9zi5kk"
 st.sidebar.link_button("Become a Patron!", url_stripe_2,
-                       type="primary", disabled=False)
+                       type="primary", disabled=False, use_container_width=True)
 # #############################################################
 bc1, bc2 = st.columns(2)
 with bc1:
