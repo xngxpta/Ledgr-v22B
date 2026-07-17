@@ -21,19 +21,6 @@ from prophet.plot import plot_plotly, plot_components_plotly
 import os
 import streamlit.components.v1 as components
 
-GA_ID = "G-4MRDCEFGB4"
-
-gtag_html = f"""
-<script async src="https://www.googletagmanager.com/gtag/js?id={GA_ID}"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){{dataLayer.push(arguments);}}
-  gtag('js', new Date());
-  gtag('config', '{GA_ID}');
-</script>
-"""
-# Embed the script
-components.html(gtag_html, height=0)
 # Page Setup ##############################################
 direc = os.getcwd()
 logofile = f'{direc}/pages/appdata/imgs/Ledgr_Logo_F2.png'
