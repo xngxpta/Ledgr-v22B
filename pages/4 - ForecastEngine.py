@@ -56,9 +56,9 @@ url_linkedin = "https://www.linkedin.com/company/ledgrapp/"
 choicelist = ["Prophet", "LSTM", "Others"]
 st.write("  ---------------------------------------------------------------  ")
 st.title("Forecast Price Ranges.")
-st.header("Just select a stock ticker.", divider='rainbow')
-st.info("Train Ledgr's AI Engines. Forecast Asset Prices.")
 
+st.header("Train Ledgr's AI Engines. Forecast Asset Prices.", divider='rainbow')
+st.info("Just select a stock ticker.")
 st.video('https://youtu.be/QVGy-AnBR4I?si=Y0gl5QwrR9AoE4ft')
 
 st.info("Chart behaviour, predict price-ranges, observe trajectories.")
