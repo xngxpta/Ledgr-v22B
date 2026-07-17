@@ -30,7 +30,7 @@ st.logo(logofile, size="medium", link='https://alphaledgr.com/',
 with st.sidebar:
     st.image(logofile, use_container_width=True)
     st.caption("Select a stock, train the algorithm and predict scenarios.")
-    st.link_button("Join Us!", url_stripe, type="primary",
+    st.link_button("Join Us!", url_stripe_2, type="primary",
                    disabled=False, use_container_width=True)
 # Variables & Declarations ###############################################
 
@@ -59,7 +59,7 @@ st.title("Forecast Price Ranges.")
 st.header("Just select a stock ticker.", divider='rainbow')
 
 
-fc1, fc2 = st.columns([2, 3])
+fc1, fc2 = st.columns([1, 3])
 with fc1:
     st.caption("Train Ledgr's AI Engines. Forecast Asset Prices.")
     st.info("Chart behaviour, predict price-ranges, observe trajectories.")
