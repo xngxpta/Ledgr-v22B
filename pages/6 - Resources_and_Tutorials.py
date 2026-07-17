@@ -5,7 +5,21 @@ import base64
 import os
 import urllib
 from streamlit_pdf_viewer import pdf_viewer
-#from st_paywall import add_auth
+import streamlit.components.v1 as components
+
+GA_ID = "G-4MRDCEFGB4"
+
+gtag_html = f"""
+<script async src="https://www.googletagmanager.com/gtag/js?id={GA_ID}"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){{dataLayer.push(arguments);}}
+  gtag('js', new Date());
+  gtag('config', '{GA_ID}');
+</script>
+"""
+# Embed the script
+components.html(gtag_html, height=0)
 
 st.set_page_config(page_title='Ledgr | About & Tutorials', layout="wide",
                    initial_sidebar_state="expanded")
