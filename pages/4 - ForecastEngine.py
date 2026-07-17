@@ -57,15 +57,11 @@ choicelist = ["Prophet", "LSTM", "Others"]
 st.write("  ---------------------------------------------------------------  ")
 st.title("Forecast Price Ranges.")
 st.header("Just select a stock ticker.", divider='rainbow')
+st.info("Train Ledgr's AI Engines. Forecast Asset Prices.")
 
+st.video('https://youtu.be/QVGy-AnBR4I?si=Y0gl5QwrR9AoE4ft')
 
-fc1, fc2 = st.columns([1, 3])
-with fc1:
-    st.caption("Train Ledgr's AI Engines. Forecast Asset Prices.")
-    st.info("Chart behaviour, predict price-ranges, observe trajectories.")
-with fc2:
-    st.video('https://youtu.be/QVGy-AnBR4I?si=Y0gl5QwrR9AoE4ft')
-
+st.info("Chart behaviour, predict price-ranges, observe trajectories.")
 st.write("    -----------------------------------------------------------    ")
 # Functions & Cached Resources ######################################
 with st.form("user_inputs"):
