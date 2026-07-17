@@ -35,10 +35,9 @@ st.set_page_config(page_title='Ledgr | Analytics', layout="wide",
 
 url_stripe = "https://buy.stripe.com/6oU28t21Y2NmbfjdkK0480h"
 url_stripe_2 = "https://buy.stripe.com/dR64iacsh6bx9zi5kk"
-st.sidebar.link_button("Try Ledgr Pro!", url_stripe, type="primary",
-                       disabled=False)
-st.sidebar.link_button("Become a Patron!", url_stripe_2, type="primary",
-                       disabled=False)
+
+st.sidebar.link_button("Become a Patron!", url_stripe_2,
+                       type="primary", disabled=False, use_container_width=True)
 pathtkr = f"{direc}/pages/appdata/tickerlist_y.csv"
 # Icons and Links ###########################ff
 ytube = f'{direc}/pages/appdata/imgs/ytube.svg'
