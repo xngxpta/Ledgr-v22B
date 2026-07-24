@@ -429,7 +429,7 @@ def rsif(df):
     df_rsi = df.filter(["momentum_rsi", "momentum_rsi_21"],
                        axis=1)
     # df_rsi = df_rsi.iloc[8:]
-    fig_rsi = make_subplots(rows=2, cols=1, shared_xaxes=True,
+    fig_rsi = make_subplots(rows=2, cols=1, shared_xaxes=False,
                             row_width=[0.4, 0.6])
     fig_rsi.add_trace(go.Candlestick(x=df.index,
                                      open=df["Open"], high=df["High"],
