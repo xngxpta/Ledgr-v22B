@@ -58,8 +58,13 @@ url_blog = 'https://www.alphaledgr.com/Blog'
 url_linkedin = "https://www.linkedin.com/company/ledgrapp/"
 # ############################################################
 
-# authenticator.logout("Logout", "sidebar")
-st.title("Analyze any Asset. In-Depth, at ease.")
+px1, px2, px3 = st.columns([2, 4, 2])
+with px1:
+    st.write(' ')
+with px2:
+    st.title(":AnalyticsBox:")
+with px3:
+    st.write(' ')
 
 with st.sidebar:
     st.image(logofile, use_container_width=True)
@@ -69,9 +74,8 @@ with st.sidebar:
              #      disabled=False, use_container_width="True")
 mx1, mx2 = st.columns(2)
 with mx1:
-    st.title(":AnalyticsBox:")
-    st.write("**Track Securities.**")
-    st.write("**Visualize KPIs, Follow Signals.**")
+    st.title("Analyze any company in-depth, with ease")
+    st.write("**Track Securities. Visualize KPIs, Observe Signals.**")
     st.info("**Perform Technical Analyses, grab insights.**")
 with mx2:
     st.video('https://youtu.be/CkMui1TdMqg?si=o1Jq44z8wxWYMsKn')
