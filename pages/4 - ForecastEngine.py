@@ -67,8 +67,9 @@ with px2:
 with px3:
     st.write(' ')
 
-st.info(">> Just select a stock ticker. >> Check for markers of seasonality, >> Observe price behaviour.")
-st.video('https://youtu.be/QVGy-AnBR4I?si=Y0gl5QwrR9AoE4ft')
+with st.container():
+    st.info(">> Just select a stock ticker. >> Check for markers of seasonality, >> Observe price behaviour.")
+    st.video('https://youtu.be/QVGy-AnBR4I?si=Y0gl5QwrR9AoE4ft')
 
 
 st.write("    -----------------------------------------------------------    ")
