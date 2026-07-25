@@ -32,7 +32,7 @@ with st.sidebar:
     st.image(logofile, use_container_width=True)
     st.caption("Select a stock, train the algorithm and predict scenarios.")
     st.link_button("Join Us!", url_stripe_2, type="primary",
-                   disabled=False, use_container_width=True)
+                   disabled=False)
 # Variables & Declarations ###############################################
 
 
