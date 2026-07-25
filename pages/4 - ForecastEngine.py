@@ -62,14 +62,16 @@ with px1:
     st.write(' ')
 with px2:
     st.title(":ForecastEngine:")
-    st.header("Train Ledgr's AI Engines. Forecast Asset Prices.", divider='rainbow')
-    st.info("Chart behaviour, predict price-ranges, observe trajectories.")
 with px3:
     st.write(' ')
 
 with st.container():
+    st.header("Train Ledgr's AI Engines yourself!", divider='rainbow')
+
+    st.info("Map behaviour, forecast scenarios, watch price motion.")
+
     st.info(">> Just select a stock ticker. >> Check for markers of seasonality, >> Observe price behaviour.")
-    st.video('https://youtu.be/QVGy-AnBR4I?si=Y0gl5QwrR9AoE4ft')
+    st.video('https://youtu.be/QVGy-AnBR4I?si=Y0gl5QwrR9AoE4ft', use_container_width=True)
 
 
 st.write("    -----------------------------------------------------------    ")
