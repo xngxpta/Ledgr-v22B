@@ -72,8 +72,14 @@ insta = f"{direc}/pages/appdata/imgs/insta.svg"
 linkedin = f"{direc}/pages/appdata/imgs/linkedin.svg"
 ledgrblog = f"{direc}/pages/appdata/imgs/Ledgr_Logo_F1.png"
 icon_size = 100  # ####################################
-
-st.title("Your Wealth Dashboard and Global Finances")
+nx1, nx2, nx3 = st.columns([2, 4, 2])
+with nx1:
+    st.write(' ')
+with nx2:
+    st.title(":MarketBoard:")
+    st.markdown("""**Your Wealth Dashboard and Global Finances**""")
+with nx3:
+    st.write(' ')
 
 @st.cache_resource
 def data_BSE():
