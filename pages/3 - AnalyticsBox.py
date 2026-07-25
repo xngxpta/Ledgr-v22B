@@ -75,13 +75,8 @@ with mx1:
     st.info("**Perform Technical Analyses, grab insights.**")
 with mx2:
     st.video('https://youtu.be/CkMui1TdMqg?si=o1Jq44z8wxWYMsKn')
-# Form and Inputs ############################################################
-
-
-
+# Form and Inputs ###########################################################
 stock = st.selectbox("Please select stock ticker", tickerlist)
-
-
 stock2 = stock + ".NS"
 
 
@@ -105,16 +100,12 @@ def dta(df2):
     df = add_all_ta_features(df2,
                              open='Open', high='High', low='Low',
                              close='Close', volume='Volume')
-#    df. pd.DataFrame(df2)
     return df
 
 
 df = dta(df2)
 df_col = pd.DataFrame(df.columns)
 df.dropna()
-
-# df_col.to_csv("Analytics Columns DF List.csv")
-# st.write("DTA", df)
 
 
 @st.cache_resource
@@ -209,8 +200,6 @@ with st.container(border=True):
             st.write("**Sector** - ", sector)
         except Exception:
             st.write('Data Unreported')
-    #        fullTimeEmployees = dfi.at['fullTimeEmployees', 'Details']
-    #        st.write("**Employees** - ", fullTimeEmployees)
 
     with su2:
         st.subheader("Trading Ranges")
@@ -345,7 +334,6 @@ def trix(df):
     l_trix = df["trend_trix"].iloc[-1]
     l_trix2 = df["trend_trix"].iloc[-2]
     slope_trix = l_trix - l_trix2
-    # slope_trix2 = l_trix + l_trix2
     slope_trix = slope_trix/l_trix
     return l_trix, fig_trix, slope_trix
 
