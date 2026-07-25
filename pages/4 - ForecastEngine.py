@@ -71,7 +71,7 @@ with st.container():
     st.info("Map behaviour, forecast scenarios, watch price motion.")
 
     st.info(">> Just select a stock ticker. >> Check for markers of seasonality, >> Observe price behaviour.")
-    st.video('https://youtu.be/QVGy-AnBR4I?si=Y0gl5QwrR9AoE4ft', use_container_width=True)
+    st.video('https://youtu.be/QVGy-AnBR4I?si=Y0gl5QwrR9AoE4ft')
 
 
 st.write("    -----------------------------------------------------------    ")
