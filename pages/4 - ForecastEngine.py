@@ -56,8 +56,14 @@ url_blog = 'https://www.alphaledgr.com/Blog'
 url_linkedin = "https://www.linkedin.com/company/ledgrapp/"
 choicelist = ["Prophet", "LSTM", "Others"]
 st.write("  ---------------------------------------------------------------  ")
-st.title("Forecast Price Ranges.")
 
+px1, px2, px3 = st.columns([2, 4, 2])
+with px1:
+    st.write(' ')
+with px2:
+    st.title("Forecast Price Ranges.")
+with px3:
+    st.write(' ')
 st.header("Train Ledgr's AI Engines. Forecast Asset Prices.", divider='rainbow')
 st.info("Just select a stock ticker.")
 st.video('https://youtu.be/QVGy-AnBR4I?si=Y0gl5QwrR9AoE4ft')
