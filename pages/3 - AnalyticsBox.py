@@ -1442,7 +1442,7 @@ and to what level. An RSI of above 70 indicates an Overbought Condition, and one
                 st.metric("Trading Indicator", "Release!")
         st.info("""The Stochastic RSI (StochRSI) is a technical analysis
 indicator that measures the rate of change of the Relative Strength Index (RSI),
-providing an oscillator that fluctuates between 0 and 100.""")
+providing an oscillator that fluctuates between two limits [0-100 or 0 - 1], around their mid-level.""")
         st.plotly_chart(fig_rsik, use_container_width=True)
         st.plotly_chart(fig_rsik2, use_container_width=True)
         st.info("""The SRSI Indicator is used in parallel to other indicators,
