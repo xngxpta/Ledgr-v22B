@@ -470,6 +470,7 @@ with st.container(border=True):
 with st.container(border=True):
     st.subheader("B. Mutual Funds", divider='rainbow')
     st.caption("Map your Mutual Funds Here.")
+    mflist = mf_list()
     with st.form('mfutils'):
         mfselected = st.selectbox("Choose Scheme Code", mflist)
         mfoptions = st.selectbox("Select an Option", mfptions)
