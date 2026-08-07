@@ -12,7 +12,7 @@ import datetime as dt
 import plotly.express as px
 import yfinance as yf
 
-# from nsepy import get_history, get_index_pe_history
+from mftool import Mftool
 import plotly.graph_objs as go
 import os
 # import pickle
@@ -52,18 +52,7 @@ etflist = pd.read_csv(f"{direc}/pages/appdata/ETF_L.csv")["Symbol"]
 tickerl = pd.read_csv(f"{direc}/pages/appdata/tickerlist_y.csv")["SYMBOL"]
 mflist = pd.read_csv(f"{direc}/pages/appdata/mfcodes.csv")
 curr_list = pd.read_csv(f"{direc}/pages/appdata/currency_list.csv")["Symbol"]
-userdf = pd.read_csv(f"{direc}/pages/appdata/userloggedin.csv")
-# ######################################################################
-username_list = userdf["UserLoggedIN"]
-username = username_list.iloc[-1]
-usertag = userdf["Usertag"]
-usertag = usertag.iloc[-1]
-tstamp = dt.datetime.now()
-userdf2 = pd.DataFrame(
-    {"UserLoggedIN": [username], "Usertag": [usertag], "Timestamp": [tstamp]}
-)
-userdf = pd.concat([userdf, userdf2])
-# userdf2.to_csv('userloggedin.csv', index=False)
+mfptions = ['Get Quote for a Fund', 'Get NAV History for a Fund', 'Get Fund Details']
 # ####################################################
 # Icons and Links ###########################
 ytube = f"{direc}/pages/appdata/imgs/ytube.svg"
@@ -71,7 +60,9 @@ fbook = f"{direc}/pages/appdata/imgs/fbook.svg"
 insta = f"{direc}/pages/appdata/imgs/insta.svg"
 linkedin = f"{direc}/pages/appdata/imgs/linkedin.svg"
 ledgrblog = f"{direc}/pages/appdata/imgs/Ledgr_Logo_F1.png"
-icon_size = 100  # ####################################
+icon_size = 100  
+
+# ####################################
 nx1, nx2, nx3 = st.columns([2, 4, 2])
 with nx1:
     st.write(' ')
@@ -81,6 +72,8 @@ with nx2:
 with nx3:
     st.write(' ')
 
+
+# ###################################
 @st.cache_resource
 def data_BSE():
     BSE = yf.Ticker("^BSESN")
@@ -393,6 +386,8 @@ def ivix():
 df_ivix, fig_ivix = ivix()
 # ####################### ##############################
 # dframe_mutual = pd.DataFrame(all_scheme_codes.items())
+
+
 st.write("    ----    ")
 with st.container(border=True):
     hh1, hh2 = st.columns([2, 3])
@@ -409,14 +404,9 @@ with st.container(border=True):
     with m1:
         st.write(" ")
     with m2:
-        try:
-            main_df = pd.read_csv(f"{direc}/pages/appdata/udata/{username}_basepf.csv")
-            st.dataframe(main_df)
-        except Exception:
-            st.markdown(
-                """This section is under works and shall be released with
-                  the main release of the LedgrApp."""
-            )
+        st.markdown("""
+        This section is under works
+        and shall be released with the main release of the LedgrApp.""")
     with m3:
         st.write(" ")
 
@@ -473,7 +463,15 @@ with st.container(border=True):
 st.write("  --------  ")
 
 with st.container(border=True):
-    st.header("B. SIP Calculator", divider='rainbow')
+    st.subheader("B1. Mutual Funds", divider='rainbow')
+    st.caption("Map your Mutual Funds Here.")
+    mfselected = st.selectbox("Choose Scheme Code", mflist)
+    mfoptions = st.selectbox("Select an Option", mfptions)
+    st.write("Selected Scheme Code is: ", mfselected)
+
+
+
+    st.subheader("B2. SIP Calculator", divider='rainbow')
     st.caption(
         "Find out your Returns from any SIP scheme against a one-time investment"
     )
