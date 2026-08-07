@@ -471,12 +471,12 @@ with st.container(border=True):
         submitted = st.form_submit_button("Proceed")
         if submitted:
             if mfoptions == "Get Quote for a Fund":
-                q = mf.get_scheme_quote(f"{mfselected}")
-                df_q = pd.DataFrame(q.items())
-                df_q.rename(columns={0: 'Items', 1: 'Details'}, inplace=True)
-                df_q.set_index('Items')
+                q = mf.get_scheme_quote(f"{mfselected}", as_Dataframe=True)
+               # df_q = pd.DataFrame(q.items())
+              #  df_q.rename(columns={0: 'Items', 1: 'Details'}, inplace=True)
+              #  df_q.set_index('Items')
                 st.write("Selected Scheme Code is: ", mfselected)
-                st.write("Quotation for the selected scheme is: ", df_q)
+                st.write("Quotation for the selected scheme is: ", q)
             elif mfoptions == "Get NAV History for a Fund":
                 snav = mf.get_scheme_historical_nav(f"{mfselected}")
                 data = snav['data']
