@@ -15,7 +15,8 @@ import yfinance as yf
 from mftool import Mftool
 import plotly.graph_objs as go
 import os
-# import pickle
+import requests
+import io
 import matplotlib as plt
 from plotly.subplots import make_subplots
 from selectolax.parser import HTMLParser
@@ -385,10 +386,63 @@ def ivix():
 
 df_ivix, fig_ivix = ivix()
 
-@st.cache_resource
-def mf_list():
-    mflist = mf.get_scheme_codes()
-    return mflist
+
+
+# Mutual Funds ##
+@st.cache_data(ttl=3600)  # Caches the data for 1 hour to prevent redundant heavy network calls
+def fetch_amfi_master_data():
+  url = "https://amfiindia.com"
+  try:
+    response = requests.get(url, timeout=10)
+    raw_text = response.text
+
+    # Parse semicolon-separated values while filtering out empty rows/headers
+    lines = []
+    for line in raw_text.splitlines():
+      if ";" in line and "Scheme Code" not in line:
+        lines.append(line)
+
+    csv_data = "\n".join(lines)
+    columns = [
+        "Scheme Code",
+        "ISIN Growth",
+        "ISIN Reinvestment",
+        "Scheme Name",
+        "Net Asset Value",
+        "Date",
+    ]
+    df = pd.read_csv(io.StringIO(csv_data), sep=";", names=columns)
+
+    # Clean data types
+    df["Net Asset Value"] = pd.to_numeric(
+        df["Net Asset Value"], errors="coerce"
+    )
+    df["Scheme Code"] = df["Scheme Code"].astype(str).str.strip()
+    df["Scheme Name"] = df["Scheme Name"].astype(str).str.strip()
+    df = df.dropna(subset=["Net Asset Value"])
+    return df
+  except Exception as e:
+    st.error(f"Error connecting to AMFI servers: {e}")
+    return pd.DataFrame()
+
+
+@st.cache_data(ttl=1800)
+def fetch_historical_nav_data(mfselected):
+  # Pull historical entries from the free MFapi endpoint using the clean AMFI ID
+  url = f"https://mfapi.in{mfselected}"
+  try:
+    response = requests.get(url, timeout=10)
+    data = response.json()
+    if "data" in data and len(data["data"]) > 0:
+      df_hist = pd.DataFrame(data["data"])
+      df_hist["date"] = pd.to_datetime(df_hist["date"], format="%d-%m-%Y")
+      df_hist["nav"] = df_hist["nav"].astype(float)
+      return df_hist.sort_values(by="date")
+  except Exception:
+    pass
+  return pd.DataFrame()
+
+
 
 # ####################### ##############################
 
@@ -469,39 +523,80 @@ with st.container(border=True):
 with st.container(border=True):
     st.subheader("B. Mutual Funds", divider='rainbow')
     st.caption("Map your Mutual Funds Here.")
-    try:
-        mflist = mf_list()
-    except Exception as e:
-        mflist = pd.read_csv(f"{direc}/pages/appdata/mfcodes.csv")
+    
+    mflist = pd.read_csv(f"{direc}/pages/appdata/mfcodes.csv")
 
     with st.form('mfutils'):
         mfselected = st.selectbox("Choose Scheme Code", mflist)
-        mfoptions = st.selectbox("Select an Option", mfptions)
         submitted = st.form_submit_button("Proceed")
         if not submitted:
-            st.write("Select a Mutual Fund Code!!")
+            st.write("Select a Mutual Fund Code to analyze!")
             pass
-        if submitted:
-            mflist = mf_list()
-            
-            if mfoptions == "Get Quote for a Fund":
-                q = mf.get_scheme_quote(f"{mfselected}", as_Dataframe=True)
-               # df_q = pd.DataFrame(q.items())
-              #  df_q.rename(columns={0: 'Items', 1: 'Details'}, inplace=True)
-              #  df_q.set_index('Items')
-                st.write("Selected Scheme Code is: ", mfselected)
-                st.write("Quotation for the selected scheme is: ", q)
-            elif mfoptions == "Get NAV History for a Fund":
-                snav = mf.get_scheme_historical_nav(f"{mfselected}")
-                data = snav['data']
-                df_data = pd.DataFrame(data)
-                df_data['date'] = pd.to_datetime(df_data['date'], format="%d-%m-%Y")
-                st.write("NAV History for the selected scheme is: ", df_data)
-            elif mfoptions == "Get Fund Details":
-                scheme_det = mf.get_scheme_details(mfselected)
-                scheme_details = pd.DataFrame(scheme_det.items(), columns=['Items', "Details"])
-                scheme_details.set_index('Items', inplace=True)
-                st.write("Fund Details for the selected scheme are: ", scheme_details)
+        if submitted:            
+            with st.spinner("Syncing master records from AMFI..."):
+                master_df = fetch_amfi_master_data()
+
+                if master_df.empty:
+                    st.warning(
+                        "Unable to populate data grid. Please verify your connection status."
+                    )
+                    st.stop()
+                else:
+                    pass
+
+                
+
+        # Filter global dataframe down based on search keywords
+        if mfselected:
+            filtered_df = master_df[
+                master_df["Scheme Name"].str.contains(mfselected, case=False)
+            ]
+        else:
+            filtered_df = master_df
+
+        # Dropdown to pick specific target scheme
+        fund_options = filtered_df.set_index("Scheme Code")["Scheme Name"].to_dict()
+
+        if fund_options:
+            mfselected = st.selectbox(
+                "Select Scheme to Track",
+                options=list(fund_options.keys()),
+                format_func=lambda x: f"[{x}] {fund_options[x][:60]}...",
+            )
+
+            # Fetch current parameters
+            current_fund_row = master_df[master_df["Scheme Code"] == mfselected].iloc[
+                0
+            ]
+            current_nav = current_fund_row["Net Asset Value"]
+            last_updated = current_fund_row["Date"]
+
+        # --- 4. TOP METRICS LAYOUT ---
+        col1, col2, col3 = st.columns(3)
+        col1.metric("Selected Scheme Code", mfselected)
+        col2.metric("Latest NAV Price", f"₹ {current_nav:,.4f}")
+        col3.metric("AMFI Update Timestamp", str(last_updated))
+
+        # --- 5. VISUAL ANALYTICS SECTION ---
+        st.markdown("---")
+        st.subheader(f"📊 Historical Timeline: {fund_options[mfselected]}")
+
+        hist_df = fetch_historical_nav_data(mfselected)
+
+        if not hist_df.empty:
+            # Use Plotly for interactive zoomable chart
+            fig = px.line(
+                hist_df,
+                x="date",
+                y="nav",
+                labels={"date": "Timeline", "nav": "Net Asset Value (NAV)"},
+            )
+            fig.update_layout(
+                margin=dict(l=20, r=20, t=10, b=20), hovermode="x unified"
+            )
+            st.plotly_chart(fig, use_container_width=True)
+        else:
+            st.info("Historical data breakdown unavailable for this specific asset.")
 
 
 
@@ -551,12 +646,6 @@ with st.container(border=True):
             st.warning("Select values and click Calculate Returns")
 st.write("    ------    ")
 
-
-# 	@st.cache_resource
-# 	def df_snav(mf_sel):
-# 	  snav = mf.get_scheme_historical_nav(f"{mf_sel}")
-# 	  data = snav['data']
-# 	  return snav, data
 
 
 @st.cache_resource
