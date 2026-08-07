@@ -33,7 +33,7 @@ st.set_page_config(
 # ##################################################################
 
 direc = os.getcwd()
-#add_auth(required=True)
+mf = Mftool()
 logofile = f"{direc}/pages/appdata/imgs/Ledgr_Logo_F2.png"
 st.logo(logofile, size="medium", link='https://alphaledgr.com/',
         icon_image=logofile)
@@ -465,8 +465,29 @@ st.write("  --------  ")
 with st.container(border=True):
     st.subheader("B1. Mutual Funds", divider='rainbow')
     st.caption("Map your Mutual Funds Here.")
-    mfselected = st.selectbox("Choose Scheme Code", mflist)
-    mfoptions = st.selectbox("Select an Option", mfptions)
+    with st.form('mfutils'):
+        mfselected = st.selectbox("Choose Scheme Code", mflist)
+        mfoptions = st.selectbox("Select an Option", mfptions)
+        submitted = st.form_submit_button("Proceed")
+        if submitted:
+            if mfoptions == "Get Quote for a Fund":
+                q = mf.get_scheme_quote(mfselected)
+                df_q = pd.DataFrame(q.items())
+                df_q.rename(columns={0: 'Items', 1: 'Details'}, inplace=True)
+                df_q.set_index('Items')
+                st.write("Selected Scheme Code is: ", mfselected)
+                st.write("Quotation for the selected scheme is: ", df_q)
+            elif mfoptions == "Get NAV History for a Fund":
+                snav = mf.get_scheme_historical_nav(f"{mfselected}")
+                data = snav['data']
+                df_data = pd.DataFrame(data)
+                df_data['date'] = pd.to_datetime(df_data['date'], format="%d-%m-%Y")
+                st.write("NAV History for the selected scheme is: ", df_data)
+            elif mfoptions == "Get Fund Details":
+                scheme_det = mf.get_scheme_details(mfselected)
+                scheme_details = pd.DataFrame(scheme_det.items(), columns=['Items', "Details"])
+                scheme_details.set_index('Items', inplace=True)
+                st.write("Fund Details for the selected scheme are: ", scheme_details)
     st.write("Selected Scheme Code is: ", mfselected)
 
 
