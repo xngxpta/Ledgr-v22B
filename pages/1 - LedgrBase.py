@@ -522,27 +522,23 @@ with st.container(border=True):
 with st.container(border=True):
     st.subheader("B. Mutual Funds", divider='rainbow')
     st.caption("Map your Mutual Funds Here.")
-    
+     
     mflist = pd.read_csv(f"{direc}/pages/appdata/mfcodes.csv")
-
-    with st.form('mfutils'):
-        mfselected = st.selectbox("Choose Scheme Code", mflist)
-        submitted = st.form_submit_button("Proceed")
-        if not submitted:
-            st.write("Select a Mutual Fund Code to analyze!")
-            pass
-        if submitted:            
-            master_df = fetch_amfi_master_data()
-
-            if master_df.empty:
-                st.warning(
-                    "Unable to populate data grid. Please verify your connection status."
-                )
-                st.stop()
-
-            else:
+    master_df = fetch_amfi_master_data()
+    if master_df.empty:
+                    st.warning(
+                        "Unable to populate data grid. Please verify your connection status."
+                    )
+                    st.stop()
+    else:
+        
+        with st.form('mfutils'):
+            mfselected = st.selectbox("Choose Scheme Code", mflist)
+            submitted = st.form_submit_button("Proceed")
+            if not submitted:
+                st.write("Select a Mutual Fund Code to analyze!")
                 pass
-                
+            if submitted:
 
         # Filter global dataframe down based on search keywords
                 if mfselected:
