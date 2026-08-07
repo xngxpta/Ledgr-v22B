@@ -520,7 +520,7 @@ with st.container(border=True):
 
 
 with st.container(border=True):
-    st.subheader("C. SIP Calculator", divider='rainbow')
+    st.subheader("B. SIP Calculator", divider='rainbow')
     st.caption(
         "Find out your Returns from any SIP scheme against a one-time investment"
     )
@@ -633,14 +633,14 @@ url_blog = "https://www.alphaledgr.com/Blog"
 url_linkedin = "https://www.linkedin.com/company/ledgrapp/"
 
 with st.container(border=True):
-    st.header("D. Exchange Traded Funds", divider='rainbow')
+    st.header("C. Exchange Traded Funds", divider='rainbow')
     etfselect = st.selectbox("Please select ETF here!", etflist)
     figOHLC_etf, df_etf = etf(etfselect)
     st.plotly_chart(figOHLC_etf, use_container_width=True)
 st.write("   ----   ")
 
 with st.container(border=True):
-    st.header("E. Currencies", divider='rainbow')
+    st.header("D. Currencies", divider='rainbow')
     currency_selected = st.selectbox("Select Currency Pair", curr_list)
     currency_df1, fig_currency1 = currency(currency_selected)
     cd1 = currency_df1["Close"].iloc[-1]
@@ -667,7 +667,7 @@ l_ivix = df_ivix.iloc[-1]
 with st.container(border=True):
     cn1, cn2, cn3 = st.columns([3, 2, 1])
     with cn1:
-        st.header("F. Market Volatility Index",  divider='rainbow')
+        st.header("E. Market Volatility Index",  divider='rainbow')
     with cn2:
         st.write(" ")
         st.markdown(
