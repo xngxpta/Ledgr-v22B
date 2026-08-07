@@ -493,6 +493,7 @@ with st.container(border=True):
                 st.warning("Please select a valid option.")
         else:
             st.warning("Select values and click Proceed!!")
+            pass
 
 
 
