@@ -51,7 +51,6 @@ indlist = pd.read_csv(f"{direc}/pages/appdata/Index_L.csv")["Symbol"]
 indlist = pd.Series(indlist)
 etflist = pd.read_csv(f"{direc}/pages/appdata/ETF_L.csv")["Symbol"]
 tickerl = pd.read_csv(f"{direc}/pages/appdata/tickerlist_y.csv")["SYMBOL"]
-#mflist = pd.read_csv(f"{direc}/pages/appdata/mfcodes.csv")
 curr_list = pd.read_csv(f"{direc}/pages/appdata/currency_list.csv")["Symbol"]
 mfptions = ['Get Quote for a Fund', 'Get NAV History for a Fund', 'Get Fund Details']
 # ####################################################
@@ -470,7 +469,11 @@ with st.container(border=True):
 with st.container(border=True):
     st.subheader("B. Mutual Funds", divider='rainbow')
     st.caption("Map your Mutual Funds Here.")
-    mflist = mf_list()
+    try:
+        mflist = mf_list()
+    except Exception as e:
+        mflist = pd.read_csv(f"{direc}/pages/appdata/mfcodes.csv")
+
     with st.form('mfutils'):
         mfselected = st.selectbox("Choose Scheme Code", mflist)
         mfoptions = st.selectbox("Select an Option", mfptions)
