@@ -460,6 +460,7 @@ with st.container(border=True):
 
 
 st.write("  --------  ")
+mf = Mftool()
 
 with st.container(border=True):
     st.subheader("B. Mutual Funds", divider='rainbow')
@@ -469,8 +470,6 @@ with st.container(border=True):
         mfoptions = st.selectbox("Select an Option", mfptions)
         submitted = st.form_submit_button("Proceed")
         if submitted:
-            mf = Mftool()
-
             if mfoptions == "Get Quote for a Fund":
                 q = mf.get_scheme_quote(mfselected)
                 df_q = pd.DataFrame(q.items())
