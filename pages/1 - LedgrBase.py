@@ -33,7 +33,7 @@ st.set_page_config(
 # ##################################################################
 
 direc = os.getcwd()
-mf = Mftool()
+# mf = Mftool()
 logofile = f"{direc}/pages/appdata/imgs/Ledgr_Logo_F2.png"
 st.logo(logofile, size="medium", link='https://alphaledgr.com/',
         icon_image=logofile)
