@@ -532,27 +532,25 @@ with st.container(border=True):
             st.write("Select a Mutual Fund Code to analyze!")
             pass
         if submitted:            
-            with st.spinner("Syncing master records from AMFI..."):
+            master_df = fetch_amfi_master_data()
 
-                master_df = fetch_amfi_master_data()
+            if master_df.empty:
+                st.warning(
+                    "Unable to populate data grid. Please verify your connection status."
+                )
+                st.stop()
 
-                if master_df.empty:
-                    st.warning(
-                        "Unable to populate data grid. Please verify your connection status."
-                    )
-                    st.stop()
-                else:
-                    
-
+            else:
+                pass
                 
 
         # Filter global dataframe down based on search keywords
-                    if mfselected:
-                        filtered_df = master_df[
-                            master_df["Scheme Name"].str.contains(mfselected, case=False)
-                        ]
-                    else:
-                        filtered_df = master_df
+                if mfselected:
+                    filtered_df = master_df[
+                        master_df["Scheme Name"].str.contains(mfselected, case=False)
+                    ]
+                else:
+                    filtered_df = master_df
 
         # Dropdown to pick specific target scheme
         fund_options = filtered_df.set_index("Scheme Code")["Scheme Name"].to_dict()
