@@ -33,7 +33,6 @@ st.set_page_config(
 # ##################################################################
 
 direc = os.getcwd()
-# mf = Mftool()
 logofile = f"{direc}/pages/appdata/imgs/Ledgr_Logo_F2.png"
 st.logo(logofile, size="medium", link='https://alphaledgr.com/',
         icon_image=logofile)
@@ -470,6 +469,8 @@ with st.container(border=True):
         mfoptions = st.selectbox("Select an Option", mfptions)
         submitted = st.form_submit_button("Proceed")
         if submitted:
+            mf = Mftool()
+
             if mfoptions == "Get Quote for a Fund":
                 q = mf.get_scheme_quote(mfselected)
                 df_q = pd.DataFrame(q.items())
