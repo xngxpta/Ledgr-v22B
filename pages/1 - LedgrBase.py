@@ -33,6 +33,8 @@ st.set_page_config(
 # ##################################################################
 
 direc = os.getcwd()
+mf = Mftool()
+
 logofile = f"{direc}/pages/appdata/imgs/Ledgr_Logo_F2.png"
 st.logo(logofile, size="medium", link='https://alphaledgr.com/',
         icon_image=logofile)
@@ -49,7 +51,7 @@ indlist = pd.read_csv(f"{direc}/pages/appdata/Index_L.csv")["Symbol"]
 indlist = pd.Series(indlist)
 etflist = pd.read_csv(f"{direc}/pages/appdata/ETF_L.csv")["Symbol"]
 tickerl = pd.read_csv(f"{direc}/pages/appdata/tickerlist_y.csv")["SYMBOL"]
-mflist = pd.read_csv(f"{direc}/pages/appdata/mfcodes.csv")
+#mflist = pd.read_csv(f"{direc}/pages/appdata/mfcodes.csv")
 curr_list = pd.read_csv(f"{direc}/pages/appdata/currency_list.csv")["Symbol"]
 mfptions = ['Get Quote for a Fund', 'Get NAV History for a Fund', 'Get Fund Details']
 # ####################################################
@@ -383,8 +385,13 @@ def ivix():
 
 
 df_ivix, fig_ivix = ivix()
+
+@st.cache_resource
+def mf_list():
+    mflist = mf.get_scheme_codes()
+    return mflist
+
 # ####################### ##############################
-# dframe_mutual = pd.DataFrame(all_scheme_codes.items())
 
 
 st.write("    ----    ")
@@ -459,8 +466,6 @@ with st.container(border=True):
         st.plotly_chart(figOHLC_FTSE, use_container_width=True)
 
 
-st.write("  --------  ")
-mf = Mftool()
 
 with st.container(border=True):
     st.subheader("B. Mutual Funds", divider='rainbow')
@@ -469,7 +474,12 @@ with st.container(border=True):
         mfselected = st.selectbox("Choose Scheme Code", mflist)
         mfoptions = st.selectbox("Select an Option", mfptions)
         submitted = st.form_submit_button("Proceed")
+        if not submitted:
+            st.write("Select a Mutual Fund Code!!")
+            pass
         if submitted:
+            mflist = mf_list()
+            
             if mfoptions == "Get Quote for a Fund":
                 q = mf.get_scheme_quote(f"{mfselected}", as_Dataframe=True)
                # df_q = pd.DataFrame(q.items())
@@ -488,11 +498,7 @@ with st.container(border=True):
                 scheme_details = pd.DataFrame(scheme_det.items(), columns=['Items', "Details"])
                 scheme_details.set_index('Items', inplace=True)
                 st.write("Fund Details for the selected scheme are: ", scheme_details)
-            else:
-                st.warning("Please select a valid option.")
-        else:
-            st.warning("Select values and click Proceed!!")
-            pass
+
 
 
 
