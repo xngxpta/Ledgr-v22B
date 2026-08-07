@@ -549,21 +549,21 @@ with st.container(border=True):
                     filtered_df = master_df
 
         # Dropdown to pick specific target scheme
-        fund_options = filtered_df.set_index("Scheme Code")["Scheme Name"].to_dict()
+                    fund_options = filtered_df.set_index("Scheme Code")["Scheme Name"].to_dict()
 
-        if fund_options:
-            mfselected = st.selectbox(
-                "Select Scheme to Track",
-                options=list(fund_options.keys()),
-                format_func=lambda x: f"[{x}] {fund_options[x][:60]}...",
-            )
+                    if fund_options:
+                        mfselected = st.selectbox(
+                            "Select Scheme to Track",
+                            options=list(fund_options.keys()),
+                            format_func=lambda x: f"[{x}] {fund_options[x][:60]}...",
+                        )
 
-            # Fetch current parameters
-            current_fund_row = master_df[master_df["Scheme Code"] == mfselected].iloc[
-                0
-            ]
-            current_nav = current_fund_row["Net Asset Value"]
-            last_updated = current_fund_row["Date"]
+                        # Fetch current parameters
+                        current_fund_row = master_df[master_df["Scheme Code"] == mfselected].iloc[
+                            0
+                        ]
+                        current_nav = current_fund_row["Net Asset Value"]
+                        last_updated = current_fund_row["Date"]
 
         # --- 4. TOP METRICS LAYOUT ---
         col1, col2, col3 = st.columns(3)
@@ -701,48 +701,6 @@ def currency(currency_selected):
     fig_currency1.update_layout(xaxis_rangeslider_visible=False, height=360)
     return currency_df1, fig_currency1
 
-
-# with st.container(border=True):
-# st.header('C. Mutual Funds', divider='rainbow')
-# st.caption('Map your Mutual Funds Here...')
-# with st.form('mf_info'):
-# mf_sel = st.selectbox("Choose Scheme Code", df_scodes)
-# submitted = st.form_submit_button("Proceed")
-#  if not submitted:
-#      st.write("Select a Mutual Fund Code!!")
-#      pass
-#   if submitted:
-#     q = mf.get_scheme_quote(mf_sel)
-#    df_q = pd.DataFrame(q.items())
-#     df_q.rename(columns={0: 'Items', 1: 'Details'}, inplace=True)
-#    df_q.set_index('Items')
-#   scheme_det = mf.get_scheme_details(mf_sel)
-#   scheme_details = pd.DataFrame(
-#       scheme_det.items(), columns=['Items', "Details"])
-#   scheme_details.tail()
-#  scheme_details = scheme_details.set_index('Items')
-#   scheme_details.sort_values('Items')
-#    fh = scheme_details.loc['fund_house'][0:]
-#     stype = scheme_details.loc['scheme_type'][0:]
-#     scat = scheme_details.loc['scheme_category'][0:]
-#    sname = scheme_details.loc['scheme_name'][0:]
-#    scode = scheme_details.loc['scheme_code'][0:]
-#     df_mk, fig_mkt = data_mkt()
-#     snav, data = df_snav(mf_sel)
-#    df_data = pd.DataFrame(data)
-#    df_data['date'] = pd.to_datetime(df_data['date'],
-#        format="%d-%m-%Y")
-#      st.write('1. Fund_house', fh.iloc[-1])
-#      st.write('3. Scheme Category', scat.iloc[-1])
-##      st.write('5. Scheme Code', scode.iloc[-1])
-#    st.write('6. Quotation', df_q)
-#   with st.expander("7. Expand here for NAV Data"):
-#     st.write(f"Security Code {mf_sel}", df_data)
-# try:
-#     df_data.sort_values(by='date', ascending=True)
-##   st.plotly_chart(f_mf)
-# except Exception:
-#    st.write("Needs more Work")
 
 url_ytube = "https://www.youtube.com/@LedgrBase"
 url_fb = "https://www.facebook.com/share/1BnXaYvRzV/"
