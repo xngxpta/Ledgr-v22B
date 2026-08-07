@@ -463,7 +463,7 @@ with st.container(border=True):
 st.write("  --------  ")
 
 with st.container(border=True):
-    st.subheader("B1. Mutual Funds", divider='rainbow')
+    st.subheader("B. Mutual Funds", divider='rainbow')
     st.caption("Map your Mutual Funds Here.")
     with st.form('mfutils'):
         mfselected = st.selectbox("Choose Scheme Code", mflist)
@@ -488,11 +488,15 @@ with st.container(border=True):
                 scheme_details = pd.DataFrame(scheme_det.items(), columns=['Items', "Details"])
                 scheme_details.set_index('Items', inplace=True)
                 st.write("Fund Details for the selected scheme are: ", scheme_details)
-    st.write("Selected Scheme Code is: ", mfselected)
+            else:
+                st.warning("Please select a valid option.")
+        else:
+            st.warning("Select values and click Proceed!!")
 
 
 
-    st.subheader("B2. SIP Calculator", divider='rainbow')
+with st.container(border=True):
+    st.subheader("C. SIP Calculator", divider='rainbow')
     st.caption(
         "Find out your Returns from any SIP scheme against a one-time investment"
     )
@@ -645,23 +649,22 @@ def currency(currency_selected):
 ##   st.plotly_chart(f_mf)
 # except Exception:
 #    st.write("Needs more Work")
-st.write("   ----   ")
 
-url_ytube = "https://www.youtube.com/@LedgrInc"
+url_ytube = "https://www.youtube.com/@LedgrBase"
 url_fb = "https://www.facebook.com/share/1BnXaYvRzV/"
 url_insta = "https://www.instagram.com/alphaledgr/"
 url_blog = "https://www.alphaledgr.com/Blog"
 url_linkedin = "https://www.linkedin.com/company/ledgrapp/"
 
 with st.container(border=True):
-    st.header("C. Exchange Traded Funds", divider='rainbow')
+    st.header("D. Exchange Traded Funds", divider='rainbow')
     etfselect = st.selectbox("Please select ETF here!", etflist)
     figOHLC_etf, df_etf = etf(etfselect)
     st.plotly_chart(figOHLC_etf, use_container_width=True)
 st.write("   ----   ")
 
 with st.container(border=True):
-    st.header("D. Currencies", divider='rainbow')
+    st.header("E. Currencies", divider='rainbow')
     currency_selected = st.selectbox("Select Currency Pair", curr_list)
     currency_df1, fig_currency1 = currency(currency_selected)
     cd1 = currency_df1["Close"].iloc[-1]
@@ -688,7 +691,7 @@ l_ivix = df_ivix.iloc[-1]
 with st.container(border=True):
     cn1, cn2, cn3 = st.columns([3, 2, 1])
     with cn1:
-        st.header("E. Market Volatility Index",  divider='rainbow')
+        st.header("F. Market Volatility Index",  divider='rainbow')
     with cn2:
         st.write(" ")
         st.markdown(
@@ -708,7 +711,7 @@ l_ustreasury = df_treasury["Close"].iloc[-1]
 with st.container(border=True):
     bn1, bn2, bn3 = st.columns([3, 2, 1])
     with bn1:
-        st.header("F. Treasury Yield Rates", divider='rainbow')
+        st.header("G. Treasury Yield Rates", divider='rainbow')
     with bn2:
         st.write(" ")
         st.markdown(
