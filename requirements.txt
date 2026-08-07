@@ -34,3 +34,4 @@ stripe
 authlib
 google-auth
 firebase-admin
+mftool
