@@ -471,7 +471,7 @@ with st.container(border=True):
         submitted = st.form_submit_button("Proceed")
         if submitted:
             if mfoptions == "Get Quote for a Fund":
-                q = mf.get_scheme_quote(mfselected)
+                q = mf.get_scheme_quote(f"{mfselected}")
                 df_q = pd.DataFrame(q.items())
                 df_q.rename(columns={0: 'Items', 1: 'Details'}, inplace=True)
                 df_q.set_index('Items')
