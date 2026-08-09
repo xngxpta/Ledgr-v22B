@@ -24,6 +24,8 @@ import requests
 import streamlit as st
 import streamlit.components.v1 as components
 
+from datetime import date, timedelta
+
 
 
 st.set_page_config(
@@ -385,6 +387,582 @@ def ivix():
 
 df_ivix, fig_ivix = ivix()
 
+
+
+@st.cache_resource
+
+def get_historical_price(ticker, target_date):
+    """
+    Get the closing price for a ticker on target_date.
+
+    If target_date is a weekend/market holiday, the function
+    looks backwards for the most recent available trading day.
+    """
+
+    try:
+        stock = yf.Ticker(ticker)
+
+        start_date = target_date - timedelta(days=7)
+        end_date = target_date + timedelta(days=1)
+
+        history = stock.history(
+            start=start_date,
+            end=end_date,
+            auto_adjust=False
+        )
+
+        if history.empty:
+            return None
+
+        # Remove timezone information if present
+        history.index = history.index.tz_localize(None)
+
+        # Keep dates on or before the requested date
+        history = history[
+            history.index.date <= target_date
+        ]
+
+        if history.empty:
+            return None
+
+        # Most recent available trading day
+        latest_row = history.iloc[-1]
+
+        return float(latest_row["Close"])
+
+    except Exception as e:
+        st.error(f"Could not retrieve historical price for {ticker}: {e}")
+        return None
+
+
+def get_current_price(ticker):
+    """
+    Get the latest available market price.
+    """
+
+    try:
+        stock = yf.Ticker(ticker)
+
+        history = stock.history(
+            period="5d",
+            auto_adjust=False
+        )
+
+        if history.empty:
+            return None
+
+        return float(history["Close"].dropna().iloc[-1])
+
+    except Exception as e:
+        st.error(f"Could not retrieve current price for {ticker}: {e}")
+        return None
+
+
+def calculate_security_data(
+    portfolio_name,
+    portfolio_start_date,
+    ticker,
+    units_held,
+    release_date
+):
+    """
+    Calculate all portfolio information for one security.
+    """
+
+    ticker = ticker.upper().strip()
+
+    # --------------------------------------------------------
+    # STATUS
+    # --------------------------------------------------------
+
+    if release_date == date.today():
+        status = "open"
+    else:
+        status = "closed"
+
+    # --------------------------------------------------------
+    # PURCHASE PRICE
+    # --------------------------------------------------------
+
+    purchase_price = get_historical_price(
+        ticker,
+        portfolio_start_date
+    )
+
+    # --------------------------------------------------------
+    # SELLING PRICE
+    # --------------------------------------------------------
+
+    if status == "open":
+        # Position is open, so use current market price
+        selling_price = get_current_price(ticker)
+
+    else:
+        # Position is closed, so use release-date price
+        selling_price = get_historical_price(
+            ticker,
+            release_date
+        )
+
+    # --------------------------------------------------------
+    # PROFIT / LOSS
+    # --------------------------------------------------------
+
+    if purchase_price is not None and selling_price is not None:
+
+        investment_value = purchase_price * units_held
+        current_or_sale_value = selling_price * units_held
+
+        profit_loss = (
+            selling_price - purchase_price
+        ) * units_held
+
+        profit_loss_percent = (
+            (selling_price - purchase_price)
+            / purchase_price
+        ) * 100
+
+    else:
+        investment_value = None
+        current_or_sale_value = None
+        profit_loss = None
+        profit_loss_percent = None
+
+    # --------------------------------------------------------
+    # RETURN DATA
+    # --------------------------------------------------------
+
+    return {
+        "Portfolio Name": portfolio_name,
+        "Portfolio Start Date": portfolio_start_date,
+        "Purchased Security": ticker,
+        "Units Held": units_held,
+        "Release Date": release_date,
+        "Status": status,
+        "Purchase Price": purchase_price,
+        "Selling Price": selling_price,
+        "Investment Value": investment_value,
+        "Current / Sale Value": current_or_sale_value,
+        "Profit / Loss": profit_loss,
+        "Profit / Loss %": profit_loss_percent
+    }
+
+
+# ============================================================
+# APPLICATION TITLE
+# ============================================================
+
+st.title("📈 Security Portfolio Manager")
+
+st.write(
+    "Track your investment portfolio and monitor the "
+    "profit or loss of individual securities."
+)
+
+
+# ============================================================
+# MAIN USER CHOICE
+# ============================================================
+
+user_choice = st.selectbox(
+    "What would you like to do?",
+    [
+        "Select an option",
+        "Track the Performance of my Portfolio",
+        "Continue observing the markets"
+    ]
+)
+
+
+# ============================================================
+# OPTION 2 — MARKET OBSERVATION
+# ============================================================
+
+if user_choice == "Continue observing the markets":
+
+    st.info(
+        "Market observation mode selected. "
+        "No portfolio tracking action is required."
+    )
+
+
+# ============================================================
+# OPTION 1 — PORTFOLIO TRACKING
+# ============================================================
+
+elif user_choice == "Track the Performance of my Portfolio":
+
+    st.subheader("Portfolio Details")
+
+    # --------------------------------------------------------
+    # BASIC PORTFOLIO INFORMATION
+    # --------------------------------------------------------
+
+    portfolio_name = st.text_input(
+        "A. Portfolio Name",
+        placeholder="e.g. Long Term Growth Portfolio"
+    )
+
+    portfolio_start_date = st.date_input(
+        "B. Portfolio Start Date",
+        value=date.today()
+    )
+
+    # --------------------------------------------------------
+    # NUMBER OF SECURITIES
+    # --------------------------------------------------------
+
+    number_of_securities = st.number_input(
+        "Number of securities in the portfolio",
+        min_value=1,
+        max_value=50,
+        value=1,
+        step=1
+    )
+
+    st.subheader("Security Details")
+
+    # --------------------------------------------------------
+    # MULTIPLE SECURITY FORM
+    # --------------------------------------------------------
+
+    with st.form("portfolio_form"):
+
+        security_inputs = []
+
+        for i in range(number_of_securities):
+
+            st.markdown(f"### Security {i + 1}")
+
+            col1, col2, col3 = st.columns(3)
+
+            with col1:
+                ticker = st.text_input(
+                    "C. Stock Ticker",
+                    placeholder="e.g. AAPL",
+                    key=f"ticker_{i}"
+                )
+
+            with col2:
+                units = st.number_input(
+                    "D. Units Held",
+                    min_value=0.0,
+                    value=1.0,
+                    step=1.0,
+                    key=f"units_{i}"
+                )
+
+            with col3:
+                release_date = st.date_input(
+                    "E. Release Date",
+                    value=date.today(),
+                    key=f"release_date_{i}"
+                )
+
+            security_inputs.append({
+                "ticker": ticker,
+                "units": units,
+                "release_date": release_date
+            })
+
+        submit_button = st.form_submit_button(
+            "Create / Update Portfolio",
+            type="primary"
+        )
+
+    # ========================================================
+    # PROCESS FORM
+    # ========================================================
+
+    if submit_button:
+
+        # ----------------------------------------------------
+        # VALIDATION
+        # ----------------------------------------------------
+
+        if not portfolio_name.strip():
+
+            st.error("Please enter a Portfolio Name.")
+            st.stop()
+
+        valid_securities = []
+
+        for security in security_inputs:
+
+            if not security["ticker"].strip():
+
+                st.error(
+                    "Please enter a ticker for every security."
+                )
+                st.stop()
+
+            if security["units"] <= 0:
+
+                st.error(
+                    "Units Held must be greater than zero."
+                )
+                st.stop()
+
+            valid_securities.append(security)
+
+        # ----------------------------------------------------
+        # CREATE PORTFOLIO DATA
+        # ----------------------------------------------------
+
+        portfolio_data = []
+
+        progress_bar = st.progress(0)
+
+        for index, security in enumerate(valid_securities):
+
+            with st.spinner(
+                f"Retrieving data for "
+                f"{security['ticker'].upper()}..."
+            ):
+
+                row = calculate_security_data(
+                    portfolio_name=portfolio_name,
+                    portfolio_start_date=portfolio_start_date,
+                    ticker=security["ticker"],
+                    units_held=security["units"],
+                    release_date=security["release_date"]
+                )
+
+                portfolio_data.append(row)
+
+            progress_bar.progress(
+                (index + 1) / len(valid_securities)
+            )
+
+        progress_bar.empty()
+
+        # ----------------------------------------------------
+        # CREATE DATAFRAME
+        # ----------------------------------------------------
+
+        portfolio_df = pd.DataFrame(
+            portfolio_data
+        )
+
+        # ----------------------------------------------------
+        # STORE DATAFRAME IN SESSION STATE
+        # ----------------------------------------------------
+
+        st.session_state["portfolio_df"] = portfolio_df
+
+
+# ============================================================
+# DISPLAY PORTFOLIO
+# ============================================================
+
+if "portfolio_df" in st.session_state:
+
+    portfolio_df = st.session_state["portfolio_df"]
+
+    st.divider()
+
+    st.header("Portfolio Performance")
+
+
+    # ========================================================
+    # PORTFOLIO DATAFRAME
+    # ========================================================
+
+    st.subheader("Portfolio Holdings")
+
+    display_df = portfolio_df.copy()
+
+    # Format prices
+    for column in [
+        "Purchase Price",
+        "Selling Price",
+        "Investment Value",
+        "Current / Sale Value",
+        "Profit / Loss"
+    ]:
+
+        display_df[column] = display_df[column].apply(
+            lambda x: f"₹{x:,.2f}"
+            if pd.notna(x)
+            else "N/A"
+        )
+
+    # Format P&L %
+    display_df["Profit / Loss %"] = display_df[
+        "Profit / Loss %"
+    ].apply(
+        lambda x: f"{x:.2f}%"
+        if pd.notna(x)
+        else "N/A"
+    )
+
+    st.dataframe(
+        display_df,
+        use_container_width=True,
+        hide_index=True
+    )
+
+
+    # ========================================================
+    # PORTFOLIO METRICS
+    # ========================================================
+
+    valid_pnl = portfolio_df[
+        portfolio_df["Profit / Loss"].notna()
+    ]
+
+    total_investment = portfolio_df[
+        "Investment Value"
+    ].sum()
+
+    total_current_or_sale_value = portfolio_df[
+        "Current / Sale Value"
+    ].sum()
+
+    total_profit_loss = portfolio_df[
+        "Profit / Loss"
+    ].sum()
+
+
+    if total_investment != 0:
+
+        total_profit_loss_percent = (
+            total_profit_loss
+            / total_investment
+        ) * 100
+
+    else:
+
+        total_profit_loss_percent = 0
+
+
+    open_positions = portfolio_df[
+        portfolio_df["Status"] == "open"
+    ]
+
+    closed_positions = portfolio_df[
+        portfolio_df["Status"] == "closed"
+    ]
+
+
+    # ========================================================
+    # METRIC CARDS
+    # ========================================================
+
+    col1, col2, col3, col4 = st.columns(4)
+
+    with col1:
+
+        st.metric(
+            "Total Invested",
+            f"₹{total_investment:,.2f}"
+        )
+
+    with col2:
+
+        st.metric(
+            "Current / Sale Value",
+            f"₹{total_current_or_sale_value:,.2f}"
+        )
+
+    with col3:
+
+        st.metric(
+            "Total P&L",
+            f"₹{total_profit_loss:,.2f}",
+            delta=f"{total_profit_loss_percent:.2f}%"
+        )
+
+    with col4:
+
+        st.metric(
+            "Securities",
+            len(portfolio_df)
+        )
+
+
+    # ========================================================
+    # OPEN / CLOSED POSITIONS
+    # ========================================================
+
+    st.subheader("Position Summary")
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+
+        st.metric(
+            "Open Positions",
+            len(open_positions)
+        )
+
+    with col2:
+
+        st.metric(
+            "Closed Positions",
+            len(closed_positions)
+        )
+
+
+    # ========================================================
+    # PROFITABLE / LOSS-MAKING SECURITIES
+    # ========================================================
+
+    st.subheader("Security-Level Performance")
+
+    profitable = valid_pnl[
+        valid_pnl["Profit / Loss"] > 0
+    ]
+
+    loss_making = valid_pnl[
+        valid_pnl["Profit / Loss"] < 0
+    ]
+
+    unchanged = valid_pnl[
+        valid_pnl["Profit / Loss"] == 0
+    ]
+
+
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+
+        st.metric(
+            "Profitable Securities",
+            len(profitable)
+        )
+
+    with col2:
+
+        st.metric(
+            "Loss-Making Securities",
+            len(loss_making)
+        )
+
+    with col3:
+
+        st.metric(
+            "Unchanged Securities",
+            len(unchanged)
+        )
+
+
+    # ========================================================
+    # DOWNLOAD DATA
+    # ========================================================
+
+    st.subheader("Export Portfolio")
+
+    csv = portfolio_df.to_csv(
+        index=False
+    ).encode("utf-8")
+
+    st.download_button(
+        label="Download Portfolio as CSV",
+        data=csv,
+        file_name=f"{portfolio_df['Portfolio Name'].iloc[0]}.csv",
+        mime="text/csv"
+    )
 
 
 # Mutual Funds ##
