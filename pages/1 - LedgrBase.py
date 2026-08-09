@@ -439,7 +439,6 @@ def get_current_price(ticker):
     """
     Get the latest available market price.
     """
-
     try:
         stock = yf.Ticker(ticker)
 
