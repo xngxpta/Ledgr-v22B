@@ -551,8 +551,18 @@ def calculate_security_data(
 # ============================================================
 # APPLICATION TITLE
 # ============================================================
+with st.container(border=True):
+    hh1, hh2 = st.columns([2, 3])
+    with hh1:
+        st.title(": LedgrBase :")
+        st.subheader("Hi User!")
+        st.subheader("Welcome to Ledgr!")
+        st.write("Organize your asset-holdings here, track their performance!")
+    with hh2:
+        st.video("https://youtu.be/m8C4C-LW3YY?si=wOMwU7yKp-UMYuQO")
 
-st.title("📈 Security Portfolio Manager")
+
+st.header("📈 Security Portfolio Manager")
 
 st.write(
     "Track your investment portfolio and monitor the "
@@ -1025,15 +1035,7 @@ def fetch_historical_nav_data(mfselected):
 
 
 st.write("    ----    ")
-with st.container(border=True):
-    hh1, hh2 = st.columns([2, 3])
-    with hh1:
-        st.title(": LedgrBase :")
-        st.subheader("Hi User!")
-        st.subheader("Welcome to Ledgr!")
-        st.write("Organize your asset-holdings here, track their performance!")
-    with hh2:
-        st.video("https://youtu.be/m8C4C-LW3YY?si=wOMwU7yKp-UMYuQO")
+
 
 
 st.write("    ----    ")
