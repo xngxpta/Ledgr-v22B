@@ -1035,16 +1035,6 @@ with st.container(border=True):
     with hh2:
         st.video("https://youtu.be/m8C4C-LW3YY?si=wOMwU7yKp-UMYuQO")
 
-with st.container(border=True):
-    m1, m2, m3 = st.columns([3, 4, 3])
-    with m1:
-        st.write(" ")
-    with m2:
-        st.markdown("""
-        This section is under works
-        and shall be released with the main release of the LedgrApp.""")
-    with m3:
-        st.write(" ")
 
 st.write("    ----    ")
 
