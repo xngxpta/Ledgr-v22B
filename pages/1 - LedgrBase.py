@@ -69,7 +69,7 @@ nx1, nx2, nx3 = st.columns([2, 4, 2])
 with nx1:
     st.write(' ')
 with nx2:
-    st.title(":MarketBoard:")
+    st.title(":LedgrBase | MarketBoard:")
     st.markdown("""**Your Wealth Dashboard and Global Finances**""")
 with nx3:
     st.write(' ')
