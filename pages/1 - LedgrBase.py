@@ -439,6 +439,142 @@ def get_current_price(ticker):
     """
     Get the latest available market price.
     """
+    def get_price_history(ticker, start_date, end_date):
+    """
+    Retrieve daily closing prices for a security.
+    """
+
+    try:
+        stock = yf.Ticker(ticker)
+
+        # Add one day because yfinance's end date is exclusive
+        history = stock.history(
+            start=start_date,
+            end=end_date + timedelta(days=1),
+            auto_adjust=False
+        )
+
+        if history.empty:
+            return pd.Series(dtype=float)
+
+        prices = history["Close"].copy()
+
+        # Remove timezone information
+        if prices.index.tz is not None:
+            prices.index = prices.index.tz_localize(None)
+
+        prices.index = prices.index.date
+
+        return prices
+
+    except Exception as e:
+        st.error(
+            f"Could not retrieve performance data "
+            f"for {ticker}: {e}"
+        )
+
+        return pd.Series(dtype=float)
+
+    def calculate_cumulative_performance(portfolio_df):
+    """
+    Calculate daily cumulative portfolio performance.
+    """
+
+    performance_data = []
+
+    today = date.today()
+
+    for _, security in portfolio_df.iterrows():
+
+        ticker = security["Purchased Security"]
+        units = security["Units Held"]
+        start_date = security["Portfolio Start Date"]
+        release_date = security["Release Date"]
+
+        # ----------------------------------------------------
+        # Determine the final date to use
+        # ----------------------------------------------------
+
+        if security["Status"] == "open":
+            end_date = today
+        else:
+            end_date = min(release_date, today)
+
+        # ----------------------------------------------------
+        # Get historical prices
+        # ----------------------------------------------------
+
+        prices = get_price_history(
+            ticker,
+            start_date,
+            end_date
+        )
+
+        if prices.empty:
+            continue
+
+        # ----------------------------------------------------
+        # Calculate position value
+        # ----------------------------------------------------
+
+        position_data = pd.DataFrame({
+            "Date": prices.index,
+            "Ticker": ticker,
+            "Position Value": prices.values * units,
+            "Units": units
+        })
+
+        performance_data.append(position_data)
+
+    if not performance_data:
+        return pd.DataFrame()
+
+    # --------------------------------------------------------
+    # Combine all securities
+    # --------------------------------------------------------
+
+    all_positions = pd.concat(
+        performance_data,
+        ignore_index=True
+    )
+
+    # --------------------------------------------------------
+    # Aggregate portfolio value by date
+    # --------------------------------------------------------
+
+    portfolio_value = (
+        all_positions
+        .groupby("Date")["Position Value"]
+        .sum()
+        .reset_index()
+    )
+
+    portfolio_value.rename(
+        columns={
+            "Position Value": "Portfolio Value"
+        },
+        inplace=True
+    )
+
+    # --------------------------------------------------------
+    # Calculate cumulative P&L
+    # --------------------------------------------------------
+
+    initial_value = portfolio_value[
+        "Portfolio Value"
+    ].iloc[0]
+
+    portfolio_value["Cumulative P&L"] = (
+        portfolio_value["Portfolio Value"]
+        - initial_value
+    )
+
+    portfolio_value["Cumulative Return %"] = (
+        portfolio_value["Cumulative P&L"]
+        / initial_value
+    ) * 100
+
+    return portfolio_value
 
     try:
         stock = yf.Ticker(ticker)
@@ -766,6 +902,106 @@ elif user_choice == "Track the Performance of my Portfolio":
 # ============================================================
 
 if "portfolio_df" in st.session_state:
+    # ============================================================
+# CUMULATIVE PERFORMANCE
+# ============================================================
+
+st.divider()
+
+st.header("📊 Cumulative Portfolio Performance")
+
+with st.spinner("Calculating historical portfolio performance..."):
+
+    performance_df = calculate_cumulative_performance(
+        portfolio_df
+    )
+
+
+if not performance_df.empty:
+
+    # --------------------------------------------------------
+    # Portfolio Value Chart
+    # --------------------------------------------------------
+
+    st.subheader("Portfolio Value Over Time")
+
+    value_chart_df = performance_df.copy()
+
+    value_chart_df["Date"] = pd.to_datetime(
+        value_chart_df["Date"]
+    )
+
+    value_chart_df = value_chart_df.set_index(
+        "Date"
+    )
+
+    st.line_chart(
+        value_chart_df["Portfolio Value"],
+        use_container_width=True
+    )
+
+
+    # --------------------------------------------------------
+    # Cumulative P&L Chart
+    # --------------------------------------------------------
+
+    st.subheader("Cumulative Profit / Loss")
+
+    pnl_chart_df = performance_df.copy()
+
+    pnl_chart_df["Date"] = pd.to_datetime(
+        pnl_chart_df["Date"]
+    )
+
+    pnl_chart_df = pnl_chart_df.set_index(
+        "Date"
+    )
+
+    st.line_chart(
+        pnl_chart_df["Cumulative P&L"],
+        use_container_width=True
+    )
+
+
+    # --------------------------------------------------------
+    # Cumulative Return %
+    # --------------------------------------------------------
+
+    st.subheader("Cumulative Return (%)")
+
+    return_chart_df = performance_df.copy()
+
+    return_chart_df["Date"] = pd.to_datetime(
+        return_chart_df["Date"]
+    )
+
+    return_chart_df = return_chart_df.set_index(
+        "Date"
+    )
+
+    st.line_chart(
+        return_chart_df["Cumulative Return %"],
+        use_container_width=True
+    )
+
+
+    # --------------------------------------------------------
+    # Performance Data
+    # --------------------------------------------------------
+
+    with st.expander("View Performance Data"):
+
+        st.dataframe(
+            performance_df,
+            use_container_width=True,
+            hide_index=True
+        )
+
+else:
+
+    st.warning(
+        "Historical performance data could not be calculated."
+    )
 
     portfolio_df = st.session_state["portfolio_df"]
 
