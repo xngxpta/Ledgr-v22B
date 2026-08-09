@@ -69,7 +69,7 @@ nx1, nx2, nx3 = st.columns([2, 4, 2])
 with nx1:
     st.write(' ')
 with nx2:
-    st.title(":LedgrBase | MarketBoard:")
+    st.title(":MarketBoard:")
     st.markdown("""**Your Wealth Dashboard and Global Finances**""")
 with nx3:
     st.write(' ')
@@ -439,6 +439,7 @@ def get_current_price(ticker):
     """
     Get the latest available market price.
     """
+
     try:
         stock = yf.Ticker(ticker)
 
@@ -1040,7 +1041,7 @@ st.write("    ----    ")
 st.write("    ----    ")
 
 with st.container(border=True):
-    st.title(":LedgrBase | MarketBoard:")
+    st.title(":MarketBoard:")
     hg1, hg2 = st.columns([2, 3])
     with hg1:
         st.subheader("Follow, Track and Global Markets")
